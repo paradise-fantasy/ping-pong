@@ -141,10 +141,11 @@ class Game(Thread):
 
 
     def update_score(self, player_number, increment=True):
-        # TODO: Implement update score
+        # TODO: Try-catch for reverting below 0
         self.match.update_score(player_number, increment)
 
-        if self.match.state == Match.GAME_OVER:
+        if self.match.state == Match.MATCH_OVER:
+            print "Match over!"
             # TODO: Update ratings
 
             # Set correct state
@@ -153,8 +154,9 @@ class Game(Thread):
             self.player_2 = None
 
             # Broadcast event
-            self.socket.emit("GAME_OVER", self.match.to_dict())
+            self.socket.emit("MATCH_OVER", self.match.to_dict())
 
         else:
             # Broadcast event (PLAYER_[1/2]_[INC/DEC])
+            print "Player " + str(player_number) + (" scores!" if increment else " reverts a point.")
             self.socket.emit("PLAYER_{0}_SCORE_{1}".format(player_number, "INC" if increment else "DEC"), self.match.to_dict())

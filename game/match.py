@@ -5,14 +5,14 @@ class MatchException(Exception):
     pass
 
 class Match:
-    GAME_NOT_STARTED,\
-    GAME_IN_PROGRESS,\
-    GAME_OVER,\
-    GAME_CANCELLED\
+    MATCH_NOT_STARTED,\
+    MATCH_IN_PROGRESS,\
+    MATCH_OVER,\
+    MATCH_CANCELLED\
     = range(4)
 
     def __init__(self):
-        self.state = Match.GAME_NOT_STARTED
+        self.state = Match.MATCH_NOT_STARTED
 
     def __str__(self):
         output = " MATCH SCORE ".center(41, "#") + "\n"
@@ -24,7 +24,7 @@ class Match:
         return output
 
     def start(self, player_1, player_2):
-        self.state = Match.GAME_IN_PROGRESS
+        self.state = Match.MATCH_IN_PROGRESS
         self.date = datetime.datetime.now()
         self.player_1 = MatchPlayer(player_1)
         self.player_2 = MatchPlayer(player_2)
@@ -46,10 +46,10 @@ class Match:
         # Evaluate match
         if player.score >= 11 and player.score > opponent.score + 1:
             # Game over
-            self.state = Match.GAME_OVER
+            self.state = Match.MATCH_OVER
 
     def cancel_match(self):
-        self.state = Match.GAME_CANCELLED
+        self.state = Match.MATCH_CANCELLED
 
     def to_dict(self):
         return {
