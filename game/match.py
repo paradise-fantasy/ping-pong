@@ -1,17 +1,18 @@
 import datetime
 from player import *
 
-GAME_NOT_STARTED = "not_started"
-GAME_IN_PROGRESS = "in_progress"
-GAME_OVER = "over"
-GAME_CANCELLED = "cancelled"
-
 class MatchException(Exception):
     pass
 
 class Match:
+    GAME_NOT_STARTED,\
+    GAME_IN_PROGRESS,\
+    GAME_OVER,\
+    GAME_CANCELLED\
+    = range(4)
+
     def __init__(self):
-        self.state = GAME_NOT_STARTED
+        self.state = Match.GAME_NOT_STARTED
 
     def __str__(self):
         output = " MATCH SCORE ".center(41, "#") + "\n"
@@ -23,14 +24,12 @@ class Match:
         return output
 
     def start(self, player_1, player_2):
-        self.state = GAME_IN_PROGRESS
+        self.state = Match.GAME_IN_PROGRESS
         self.date = datetime.datetime.now()
         self.player_1 = MatchPlayer(player_1)
         self.player_2 = MatchPlayer(player_2)
 
     def update_score(self, player_number, increment = True):
-        if not self.state == GAME_IN_PROGRESS:
-            raise MatchException("Game is not in progress")
 
         # Elect player and opponent given player_number
         player = self.player_1 if player_number == 1 else self.player_2
@@ -47,14 +46,27 @@ class Match:
         # Evaluate match
         if player.score >= 11 and player.score > opponent.score + 1:
             # Game over
-            self.state = GAME_OVER
-            self.winner = player
+            self.state = Match.GAME_OVER
 
     def cancel_match(self):
-        self.state = GAME_CANCELLED
+        self.state = Match.GAME_CANCELLED
+
+    def to_dict(self):
+        return {
+            "state": self.state,
+            "date": self.date.isoformat(),
+            "player_1": self.player_1.to_dict(),
+            "player_2": self.player_2.to_dict()
+        }
 
 
 class MatchPlayer(Player):
     def __init__(self, player):
         self.name = player.name
         self.score = 0
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "score": self.score
+        }
