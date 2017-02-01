@@ -47,7 +47,7 @@ class DB:
             with connection.cursor() as cursor:
                 sql ="SELECT * FROM `player`"
                 cursor.execute(sql)
-                result = cursor.fetchone()
+                result = cursor.fetchall()
         finally:
             return result
 
