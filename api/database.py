@@ -14,8 +14,12 @@ class DB:
         try:
             connection = self.connection
             with connection.cursor() as cursor:
+                sql1 = "SELECT * FROM `player` WHERE `cardid`=%s"
+                cursor.execute(sql, (cardid,))
+                result = cursor.fetchone()
+
                 sql = "INSERT INTO `player` (`name`, `cardid`, `profile_picture`, `surname`) VALUES (%s, %s, %s, %s)"
-                cursor.execute(sql, (name, cardid, profile_picture, surname))
+                print cursor.execute(sql, (name, cardid, profile_picture, surname))
             connection.commit()
         finally:
             return True;
@@ -38,6 +42,8 @@ class DB:
                 sql = "SELECT * FROM `player` WHERE `id`=%s"
                 cursor.execute(sql, (playerid,))
                 result = cursor.fetchone()
+        except Exception as e:
+            print str(e)
         finally:
             return result
 
@@ -50,6 +56,16 @@ class DB:
                 result = cursor.fetchall()
         finally:
             return result
+
+    def createMatch(player_1, player_2, score_player_1, score_player_2, winner, scores):
+        try:
+            connection = self.connection
+            with connection.cursor() as cursor:
+                sql = "INSERT INTO `matches` (`player_1`, `player_2`, `score_player_1`, `score_player_2`, `winner`, `scores`) VALUES (%i, %i, %i, %i, %i, %s)"
+                cursor.execute(sql, (player_1, player_2, score_player_1, score_player_2, winner, scores))
+            connection.commit()
+        finally:
+            return True
 
     def close(self):
         self.connection.close()

@@ -1,7 +1,9 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request
+from database import DB
 
 app = Flask(__name__)
+db = DB()
 
 @app.route('/')
 def index():
@@ -71,16 +73,37 @@ def get_matches():
 
 @app.route('/api/matches', methods=['POST'])
 def create_match():
-    if not request.json or not 'time' in request.json:
+    if not request.json or not 'winner' in request.json:
         abort(400)
-    match = {
-        'id': matches[-1]['id'] + 1,
-        'time': request.json['time'],
-        'player_1': request.json['player_1'],
-        'player_2': request.json['player_2']
-    }
-    matches.append(match)
-    return jsonify({'match': match}), 201
+    player_1 = request.json['player_1']['id']
+    player_2 = request.json['player_2']['id']
+    score_player_1 = request.json['player_1']['score']
+    score_player_2 = request.json['player_2']['score']
+    winner = request.json['winner_id']
+    scores = jsonify(request.json['scores'])
+
+    if db.createMatch(player_1,
+        player_2,
+        score_player_1,
+        score_player_2,
+        winner,
+        scores):
+        return jsonify({'result': True}), 201
+    else:
+        return jsonify({'result': False})
+
+# @app.route('/api/matches', methods=['POST'])
+# def create_match():
+#     if not request.json or not 'time' in request.json:
+#         abort(400)
+#     match = {
+#         'id': matches[-1]['id'] + 1,
+#         'time': request.json['time'],
+#         'player_1': request.json['player_1'],
+#         'player_2': request.json['player_2']
+#     }
+#     matches.append(match)
+#     return jsonify({'match': match}), 201
 
 @app.route('/api/players', methods=['GET'])
 def get_players():
@@ -142,6 +165,8 @@ def delete_task(player_cardid):
         abort(404)
     players.remove(player[0])
     return jsonify({'result': True})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
