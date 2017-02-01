@@ -14,12 +14,12 @@ class DB:
         try:
             connection = self.connection
             with connection.cursor() as cursor:
-                sql = "INSERT INTO `player` (`name`, `cardid`, `profile_picture`) VALUES (%s, %s, %s)"
-                cursor.execute(sql, (name, cardid, profile_picture))
-
+                sql = "INSERT INTO `player` (`name`, `cardid`, `profile_picture`, `surname`) VALUES (%s, %s, %s, %s)"
+                cursor.execute(sql, (name, cardid, profile_picture, surname))
             connection.commit()
         finally:
             return True;
+
     def getPlayerFromPlayerId(self, playerid):
         try:
             connection = self.connection
@@ -38,9 +38,18 @@ class DB:
                 sql = "SELECT * FROM `player` WHERE `id`=%s"
                 cursor.execute(sql, (playerid,))
                 result = cursor.fetchone()
-
         finally:
             return result
+
+    def getAllPlayers(self):
+        try:
+            connection = self.connection
+            with connection.cursor() as cursor:
+                sql ="SELECT * FROM `player`"
+                cursor.execute(sql)
+                result = cursor.fetchone()
+            finally:
+                return result
 
     def close(self):
         self.connection.close()
