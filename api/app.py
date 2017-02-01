@@ -4,6 +4,7 @@ from database import DB
 
 app = Flask(__name__)
 db = DB()
+url = 129.241.200.204
 
 @app.route('/')
 def index():
@@ -44,10 +45,10 @@ matches = [
             'id': 2,
             'score': 11
         },
-        'winner_id': 2,
-        'scores': {
-            [1,2,1,2,1,1,1,2,2,1,1,2,2,1,1,1,2,2]
-        }
+        'winner_id': 2
+        # 'scores': {
+        #     [1,2,1,2,1,1,1,2,2,1,1,2,2,1,1,1,2,2]
+        # }
     },
     {
         'id': 2,
@@ -60,10 +61,10 @@ matches = [
             'id': 2,
             'score': 11
         },
-        'winner_id': 2,
-        'scores': {
-            [1,2,1,2,1,1,1,2,2,1,1,2,2,1,1,1,2,2]
-        }
+        'winner_id': 2
+        # 'scores': {
+        #     [1,2,1,2,1,1,1,2,2,1,1,2,2,1,1,1,2,2]
+        # }
     }
 ]
 
@@ -108,35 +109,56 @@ def create_match():
 @app.route('/api/players', methods=['GET'])
 def get_players():
     #return jsonify({'players': players})
-    return jsonify(db.getAllPlayers())
+    players = db.getAllPlayers()
+    return jsonify(players)
 
 @app.route('/api/players/cardid/<int:player_cardid>', methods=['GET'])
 def get_player_card(player_cardid):
-    player = [player for player in players if player['cardid'] == player_cardid]
-    if len(player) == 0:
-        abort(404)
-    return jsonify({'player': player[0]})
+    #player = [player for player in players if player['cardid'] == player_cardid]
+    #if len(player) == 0:
+    #    abort(404)
+    player = db.getPlayerFromCardId(player_cardid)
+    if not player:
+        abort(400)
+    #return jsonify({'player': player[0]})
+    return jsonify(player)
 
 @app.route('/api/players/<int:player_id>', methods=['GET'])
 def get_player(player_id):
-    player = [player for player in players if player['id'] == player_id]
-    if len(player) == 0:
-        abort(404)
-    return jsonify({'player': player[0]})
+    # player = [player for player in players if player['id'] == player_id]
+    # if len(player) == 0:
+    #     abort(404)
+    # return jsonify({'player': player[0]})
+
+    player = db.getPlayerFromPlayerId(player_id)
+    if not player:
+        abort(400)
+    return jsonify(player)
 
 @app.route('/api/players', methods=['POST'])
 def create_player():
-    if not request.json or not 'name' in request.json:
+    # if not request.json or not 'name' in request.json:
+    #     abort(400)
+    # player = {
+    #     'id': players[-1]['id'] + 1,
+    #     'name': request.json['name'],
+    #     'cardid': request.json['cardid'],
+    #     'profile_picture': request.json['profile_picture'],
+    #     'rating': 1000
+    # }
+    # players.append(player)
+    # return jsonify({'player': player}), 201
+
+    if not request.json or not 'cardid' and 'name' in request.json:
         abort(400)
-    player = {
-        'id': players[-1]['id'] + 1,
-        'name': request.json['name'],
-        'cardid': request.json['cardid'],
-        'profile_picture': request.json['profile_picture'],
-        'rating': 1000
-    }
-    players.append(player)
-    return jsonify({'player': player}), 201
+
+    name = request.json['name']
+    cardid = request.json['cardid']
+
+    result = db.createPlayer(name, cardid)
+    if "Error" in result:
+        abort(400)
+    return jsonify(result), 201
 
 @app.route('/api/players/<int:player_cardid>', methods=['PUT'])
 def update_player(player_cardid):
