@@ -40,8 +40,8 @@ class DB:
         try:
             connection = self.connection
             with connection.cursor() as cursor:
-                sql = "SELECT * FROM `player` WHERE `id`=%s"
-                cursor.execute(sql, (playerid,))
+                sql = "SELECT * FROM `player` WHERE `cardid`=%s"
+                cursor.execute(sql, (cardid,))
                 result = cursor.fetchone()
         except Exception as e:
             print str(e)
