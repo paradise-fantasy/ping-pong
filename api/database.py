@@ -48,8 +48,8 @@ class DB:
                 sql ="SELECT * FROM `player`"
                 cursor.execute(sql)
                 result = cursor.fetchone()
-            finally:
-                return result
+        finally:
+            return result
 
     def close(self):
         self.connection.close()
