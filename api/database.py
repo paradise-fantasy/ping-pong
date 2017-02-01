@@ -14,15 +14,16 @@ class DB:
         try:
             connection = self.connection
             with connection.cursor() as cursor:
-                sql1 = "SELECT * FROM `player` WHERE `cardid`=%s"
-                cursor.execute(sql, (cardid,))
-                result = cursor.fetchone()
-
                 sql = "INSERT INTO `player` (`name`, `cardid`, `profile_picture`, `surname`) VALUES (%s, %s, %s, %s)"
-                print cursor.execute(sql, (name, cardid, profile_picture, surname))
+                cursor.execute(sql, (name, cardid, profile_picture, surname))
             connection.commit()
-        finally:
-            return True;
+
+            with connection.cursor() as cursor:
+                sql = "SELECT `id` FROM `player` WHERE `cardid`=%s"
+                cursor.execute(sql, (cardid,))
+                return cursor.fetchone()
+        except Excpetion as e:
+            return str(e)
 
     def getPlayerFromPlayerId(self, playerid):
         try:
