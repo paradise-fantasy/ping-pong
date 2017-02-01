@@ -107,7 +107,8 @@ def create_match():
 
 @app.route('/api/players', methods=['GET'])
 def get_players():
-    return jsonify({'players': players})
+    #return jsonify({'players': players})
+    return jsonify(db.getAllPlayers())
 
 @app.route('/api/players/cardid/<int:player_cardid>', methods=['GET'])
 def get_player_card(player_cardid):

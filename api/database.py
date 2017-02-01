@@ -22,8 +22,8 @@ class DB:
                 sql = "SELECT `id` FROM `player` WHERE `cardid`=%s"
                 cursor.execute(sql, (cardid,))
                 return cursor.fetchone()
-        except Excpetion as e:
-            return str(e)
+        except Exception as e:
+            return "Error: " + str(e)
 
     def getPlayerFromPlayerId(self, playerid):
         try:
@@ -43,8 +43,6 @@ class DB:
                 sql = "SELECT * FROM `player` WHERE `cardid`=%s"
                 cursor.execute(sql, (cardid,))
                 result = cursor.fetchone()
-        except Exception as e:
-            print str(e)
         finally:
             return result
 
