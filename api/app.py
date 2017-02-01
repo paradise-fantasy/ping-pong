@@ -11,16 +11,22 @@ players = [
     {
         'id': 1,
         'name': u'Haavard',
+        'surname': u'Fagervoll',
         'cardid': 60,
         'profile_picture': 'http://tinypic.org/picture/b234cda512',
-        'rating': 1000
+        'rating': 1000,
+        'wins': 0,
+        'games_played': 4
     },
     {
         'id': 2,
         'name': u'Raymi',
+        'surname': u'Eldby',
         'cardid': 70,
         'profile_picture': 'http://tinypic.org/picture/b231cfa512',
-        'rating': 1000
+        'rating': 1000,
+        'wins': 4,
+        'games_played': 4
     }
 ]
 
@@ -35,6 +41,10 @@ matches = [
         'player_2': {
             'id': 2,
             'score': 11
+        },
+        'winner_id': 2,
+        'scores': {
+            [1,2,1,2,1,1,1,2,2,1,1,2,2,1,1,1,2,2]
         }
     },
     {
@@ -47,6 +57,10 @@ matches = [
         'player_2': {
             'id': 2,
             'score': 11
+        },
+        'winner_id': 2,
+        'scores': {
+            [1,2,1,2,1,1,1,2,2,1,1,2,2,1,1,1,2,2]
         }
     }
 ]

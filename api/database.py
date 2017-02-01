@@ -1,4 +1,5 @@
-import mysql.connector
+
+import pymysql.cursors
 
 
 
@@ -7,13 +8,14 @@ class DB:
         'user': 'pingpongtestuser',
         'password': 'paradise2017',
         'host': '129.241.200.204',
-        'database': 'test'
+        'database': 'test',
+        'cursorclass': 'pymysql.cursors.DictCursor'
     }
 
 
     def __init__(self):
         try:
-            self.cnx = mysql.connector.connect(**config)
+            self.connection = pymysql.connect(**config)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")
@@ -23,44 +25,41 @@ class DB:
                 print(err)
 
     def createPlayer(self, name, cardid, profile_picture):
-        cnx = self.cnx
-        cursor = cnx.cursor()
+        try:
+            connection = self.connection
+            with cnx.cursor() as cursor:
+                sql = "INSERT INTO `player` (`name`, `cardid`, `profile_picture`) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (name, cardid, profile_picture))
 
-        add_player = ("INSERT INTO player "
-                    "(name, cardid, profile_picture) "
-                    "VALUES (%s, %s, %s)")
-        data_player = (name, cardid, profile_picture)
+            connection.commit()
 
-        cursor.execute(add_player, data_player)
+        #finally:
+        #    connection.close()
 
-        cnx.commit()
-        cursor.close()
 
     def getPlayerFromPlayerId(self, playerid):
-        cnx = self.cnx
-        cursor = cnx.cursor()
+        try:
+            connection = self.connection
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM `player` WHERE `id`=%s"
+                cursor.execute(sql, (playerid,))
 
-        query = ("SELECT * FROM player "
-                "WHERE id=%i")
-        cursor.execute(query, playerid)
-
-        for data in cursor:
-            print data
-
-        cursor.close()
+                result = cursor.fetchone()
+                print result
+        #finally:
+        #    connection.close()
 
     def getPlayerFromCardId(self, cardid):
-        cnx = self.cnx
-        cursor = cnx.cursor()
+        try:
+            connection = self.connection
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM `player` WHERE `id`=%s"
+                cursor.execute(sql, (playerid,))
 
-        query = ("SELECT * FROM player "
-                "WHERE id=%i")
-        cursor.execute(query, cardid)
-
-        for data in cursor:
-            print data
-
-        cursor.close()
+                result = cursor.fetchone()
+                print result
+        #finally:
+        #    connection.close()
 
     def close(self):
-        self.cnx.close()
+        self.connection.close()
