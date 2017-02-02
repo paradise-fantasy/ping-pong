@@ -133,10 +133,14 @@ def delete_task(player_cardid):
     players.remove(player[0])
     return jsonify({'result': True})
 
-@app.route('/api/rating/<int:player_1_id>/<int:player_2_id', methods=['GET'])
+@app.route('/api/rating/<int:player_1_id>/<int:player_2_id>', methods=['GET'])
 def get_potential_rating(player_1_id, player_2_id):
+    print player_1_id
+    print player_2_id
     player_1 = db.getPlayerFromPlayerId(player_1_id)
-    player_1 = db.getPlayerFromPlayerId(player_2_id)
+    player_2 = db.getPlayerFromPlayerId(player_2_id)
+    print player_1
+    print player_2
     if not player_1 and player_2:
         abort(400)
 
