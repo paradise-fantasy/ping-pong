@@ -22,3 +22,4 @@ body, html {
 /* IMPORT STYLES */
 @import "style/App.css";
 @import "style/Main.css";
+@import "style/Game.css";

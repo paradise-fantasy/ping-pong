@@ -1,27 +1,43 @@
-/**
- * Created by khrall on 26.01.2017.
- */
-import GameSocket from '../game-socket'
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { socket as GameSocket } from '../game-socket'
+
+// TODO: REMOVE
+const players = [
+  { name: 'Raymi', rating: 1723, score: '17-3', cardId: 1 },
+  { name: 'Håvard', rating: 1541, score: '11-5', cardId: 2 },
+  { name: 'Frederik', rating: 1327, score: '10-4', cardId: 3 },
+  { name: 'Raymi', rating: 1723, score: '17-3', cardId: 4 },
+  { name: 'Håvard', rating: 1541, score: '11-5', cardId: 5 },
+  { name: 'Frederik', rating: 1327, score: '10-4', cardId: 6 },
+  { name: 'Raymi', rating: 1723, score: '17-3', cardId: 7 },
+  { name: 'Håvard', rating: 1541, score: '11-5', cardId: 8 },
+  { name: 'Frederik', rating: 1327, score: '10-4', cardId: 9 }
+]
 
 class Main extends Component {
   constructor() {
     super();
-    this.removeListeners = this.removeListeners.bind(this);
-    this.startNewGame = this.startNewGame.bind(this);
+    this.gameEventListener = this.gameEventListener.bind(this);
   }
 
   componentDidMount() {
-    GameSocket.on('NEW_MATCH_STARTED', this.startNewGame);
+    GameSocket.on('GAME_EVENT', this.gameEventListener);
+    this.props.dispatch({
+      type: 'RECEIVE_PLAYERS',
+      players
+    });
   }
 
-  startNewGame() {
-    this.removeListeners();
-    this.props.router.push('/game');
-  }
-
-  removeListeners() {
-    GameSocket.removeListener('NEW_MATCH_STARTED', this.startNewGame);
+  gameEventListener(action) {
+    switch (action.type) {
+      case 'NEW_MATCH_STARTED':
+      case 'NEW_UNRANKED_MATCH_STARTED':
+        GameSocket.removeListener('GAME_EVENT', this.gameEventListener);
+        this.props.router.push('/game');
+        break;
+    }
   }
 
   render() {
@@ -34,78 +50,16 @@ class Main extends Component {
         <div className="Main-scoreboard">
           <table>
             <tbody>
-            <tr>
-              <td>1.</td>
-              <td>Raymi</td>
-              <td>1723</td>
-              <td>(17-3)</td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>Håvard</td>
-              <td>1541</td>
-              <td>(11-5)</td>
-            </tr>
-            <tr>
-              <td>3.</td>
-              <td>Frederik</td>
-              <td>1327</td>
-              <td>(10-4)</td>
-            </tr>
-            <tr>
-              <td>1.</td>
-              <td>Raymi</td>
-              <td>1723</td>
-              <td>(17-3)</td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>Håvard</td>
-              <td>1541</td>
-              <td>(11-5)</td>
-            </tr>
-            <tr>
-              <td>3.</td>
-              <td>Frederik</td>
-              <td>1327</td>
-              <td>(10-4)</td>
-            </tr>
-            <tr>
-              <td>1.</td>
-              <td>Raymi</td>
-              <td>1723</td>
-              <td>(17-3)</td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>Håvard</td>
-              <td>1541</td>
-              <td>(11-5)</td>
-            </tr>
-            <tr>
-              <td>3.</td>
-              <td>Frederik</td>
-              <td>1327</td>
-              <td>(10-4)</td>
-            </tr>
-            <tr>
-              <td>1.</td>
-              <td>Raymi</td>
-              <td>1723</td>
-              <td>(17-3)</td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>Håvard</td>
-              <td>1541</td>
-              <td>(11-5)</td>
-            </tr>
-            <tr>
-              <td>3.</td>
-              <td>Frederik</td>
-              <td>1327</td>
-              <td>(10-4)</td>
-            </tr>
+            {
+              players.map((player, i) =>
+                <tr key={i}>
+                  <td>{i}.</td>
+                  <td>{player.name}</td>
+                  <td>{player.rating}</td>
+                  <td>({player.score})</td>
+                </tr>
+              )
+            }
             </tbody>
           </table>
         </div>
@@ -118,9 +72,30 @@ class Main extends Component {
             <span>Thanks to all our supporters. Moms & Dads, bros and hoes &lt;3</span>
           </marquee>
         </div>
+
+        { this.props.player1 ? // Check if player1 exists
+          <div className="Main-player-joined-overlay">
+            <h1>{this.props.player1.name} is ready to fight!</h1>
+          </div>
+          : null
+        }
+
       </div>
     )
   }
 }
 
-export default Main;
+const mapStateToProps = state => {
+  const props = {};
+
+  if (state.game.player1) {
+    props.player1 = state.players.map[state.game.player1]; // Grab the full player info
+  }
+
+  return {
+    ...props,
+    game: state.game
+  };
+};
+
+export default connect(mapStateToProps)(Main);

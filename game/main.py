@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
+import sys
 
 from game import Game
 
@@ -11,8 +12,6 @@ socketio = SocketIO(app)
 @socketio.on("connect")
 def on_connect():
     print "client connected"
-    emit("news", { "data": "heyyy" })
-
 
 # TODO: Start the game
 game = Game(socket=socketio)
