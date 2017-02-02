@@ -1,6 +1,7 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request
 from database import DB
+import rating
 
 app = Flask(__name__)
 db = DB()
@@ -39,11 +40,13 @@ matches = [
         'time': "15:32 24.01.2017",
         'player_1': {
             'id': 1,
-            'score': 6
+            'score': 6,
+            'diff_rating': 13
         },
         'player_2': {
             'id': 2,
-            'score': 11
+            'score': 11,
+            'diff_rating': -5
         },
         'winner_id': 2
         # 'scores': {
@@ -68,43 +71,6 @@ matches = [
     }
 ]
 
-@app.route('/api/matches', methods=['GET'])
-def get_matches():
-    return jsonify({'matches': matches})
-
-@app.route('/api/matches', methods=['POST'])
-def create_match():
-    if not request.json or not 'winner' in request.json:
-        abort(400)
-    player_1 = request.json['player_1']['id']
-    player_2 = request.json['player_2']['id']
-    score_player_1 = request.json['player_1']['score']
-    score_player_2 = request.json['player_2']['score']
-    winner = request.json['winner_id']
-    scores = jsonify(request.json['scores'])
-
-    if db.createMatch(player_1,
-        player_2,
-        score_player_1,
-        score_player_2,
-        winner,
-        scores):
-        return jsonify({'result': True}), 201
-    else:
-        return jsonify({'result': False})
-
-# @app.route('/api/matches', methods=['POST'])
-# def create_match():
-#     if not request.json or not 'time' in request.json:
-#         abort(400)
-#     match = {
-#         'id': matches[-1]['id'] + 1,
-#         'time': request.json['time'],
-#         'player_1': request.json['player_1'],
-#         'player_2': request.json['player_2']
-#     }
-#     matches.append(match)
-#     return jsonify({'match': match}), 201
 
 @app.route('/api/players', methods=['GET'])
 def get_players():
@@ -138,8 +104,8 @@ def create_player():
         abort(400)
     return jsonify(result), 201
 
-@app.route('/api/players/<int:player_cardid>', methods=['PUT'])
-def update_player(player_cardid):
+@app.route('/api/players/<int:player_id>', methods=['PUT'])
+def update_player(player_id):
     player = [player for player in players if player['cardid'] == player_cardid]
     if len(player) == 0:
         abort(404)
@@ -166,6 +132,49 @@ def delete_task(player_cardid):
         abort(404)
     players.remove(player[0])
     return jsonify({'result': True})
+
+@app.route('/api/rating/<int:player_1_id>/<int:player_2_id', methods=['GET'])
+def get_potential_rating(player_1_id, player_2_id):
+    player_1 = db.getPlayerFromPlayerId(player_1_id)
+    player_1 = db.getPlayerFromPlayerId(player_2_id)
+    if not player_1 and player_2:
+        abort(400)
+
+    diff_rating = rating.getPotentialRatingGains(player_1['rating'], player_2['rating'])
+    return jsonify(diff_rating)
+
+
+@app.route('/api/matches', methods=['GET'])
+def get_matches():
+    matches = db.getAllMatches()
+    return jsonify(matches)
+
+@app.route('/api/matches', methods=['POST'])
+def create_match():
+    if not request.json or not 'winner' in request.json:
+        abort(400)
+    player_1 = request.json['player_1']['id']
+    player_2 = request.json['player_2']['id']
+    player_1_diff_rating = request.json['player_1']['diff_rating']
+    player_2_diff_rating = request.json['player_2']['diff_rating']
+    score_player_1 = request.json['player_1']['score']
+    score_player_2 = request.json['player_2']['score']
+    winner = request.json['winner_id']
+    scores = jsonify(request.json['scores'])
+
+    result = db.createMatch(player_1,
+        player_2,
+        score_player_1,
+        score_player_2,
+        winner,
+        scores)
+
+    if "Error" in result:
+        abort(400)
+
+
+
+    return jsonify(result)
 
 
 
