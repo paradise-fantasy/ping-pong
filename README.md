@@ -6,7 +6,7 @@ Installér pip-moduler fra requirements.txt.
 Kjør med:
 
 ```
-FLASK_APP=game.py flask run
+python main.py
 ```
 
 ## Web
