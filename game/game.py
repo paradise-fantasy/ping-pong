@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from threading import Thread
 from actions import Action
 from hardware import SimulatedHardware
@@ -17,10 +18,14 @@ class Game(Thread):
         self.player_2 = None
 
     def run(self):
-        while True:
+        running = True
+        while running:
             # TODO: Consider using a buffer for actions
             action = self.hardware.get_next_action()
             print "Got action: " + str(action.type)
+
+            if action.type == Action.EXIT:
+                running = False
 
             if self.state == Game.STATE_IDLE:
                 if action.type == Action.BOTH_BUTTONS_LONG_PRESS:
@@ -44,6 +49,9 @@ class Game(Thread):
 
                 if action.type == Action.BOTH_BUTTONS_LONG_PRESS:
                     self.cancel_match()
+
+        # Exit program
+        print "Game exiting, use CTRL+C to kill the server"
 
 
     def start_unranked_match(self):
@@ -125,6 +133,12 @@ class Game(Thread):
         # TODO: Try-catch for reverting below 0
         self.match.update_score(player_number, increment)
 
+        # Broadcast event (PLAYER_[1/2]_[INC/DEC])
+        print "Player " + str(player_number) + (" scores!" if increment else " reverts a point.")
+        self.socket.emit('GAME_EVENT', {
+            'type': 'PLAYER_{0}_SCORE_{1}'.format(player_number, "INC" if increment else "DEC")
+        })
+
         if self.match.state == Match.MATCH_OVER:
             print "Match over!"
             # TODO: Update ratings
@@ -136,10 +150,3 @@ class Game(Thread):
 
             # Broadcast event
             self.socket.emit('GAME_EVENT', { 'type': 'MATCH_OVER' })
-
-        else:
-            # Broadcast event (PLAYER_[1/2]_[INC/DEC])
-            print "Player " + str(player_number) + (" scores!" if increment else " reverts a point.")
-            self.socket.emit('GAME_EVENT', {
-                'type': 'PLAYER_{0}_SCORE_{1}'.format(player_number, "INC" if increment else "DEC")
-            })

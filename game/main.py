@@ -13,9 +13,8 @@ socketio = SocketIO(app)
 def on_connect():
     print "client connected"
 
-# TODO: Start the game
-game = Game(socket=socketio)
-game.start()
-
 if __name__ == "__main__":
+    # Start the game
+    game = Game(socket=socketio)
+    game.start()
     socketio.run(app)

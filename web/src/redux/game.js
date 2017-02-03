@@ -21,7 +21,7 @@ const gameReducer = (state = {}, action) => {
         started: action.date
       };
 
-    case 'NEW_URANKED_MATCH_STARTED':
+    case 'NEW_UNRANKED_MATCH_STARTED':
       return {
         ...state,
         state: 'starting',
@@ -62,8 +62,19 @@ const gameReducer = (state = {}, action) => {
         score2: state.score2 - 1
       };
 
-    case 'MATCH_CANCELLED':
     case 'MATCH_OVER':
+      return {
+        ...state,
+        state: 'over'
+      };
+
+    case 'MATCH_CANCELLED':
+      return {
+        ...state,
+        state: 'cancelled'
+      }
+
+    case 'RESET_MATCH':
       return {};
 
     default:
