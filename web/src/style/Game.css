@@ -1,0 +1,138 @@
+.Game {
+  width: 100%;
+  height: 100%;
+}
+
+/* GAME-STARTING */
+.Game-starting {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.Game-starting h1 {
+  color: #FFF;
+  font-size: 120px;
+  font-style: italic;
+  text-transform: uppercase;
+  margin-bottom: 140px;
+}
+
+.Game-starting h2 {
+  font-size: 140px;
+  color: #222;
+  font-family: 'ninjaruto';
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #FFF;
+}
+
+.Game-starting h3 {
+  color: #FFF;
+  font-size: 80px;
+  font-style: italic;
+  text-transform: uppercase;
+  margin: 50px 0;
+}
+
+
+/* GAME-STARTED */
+.Game-started {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+}
+
+.Game-player {
+  width: 50%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Game-player-name {
+  text-align: center;
+  font-size: 60px;
+  color: #222;
+  font-family: 'ninjaruto';
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #FFF;
+}
+
+.Game-player-score {
+  text-align: center;
+  font-size: 600px;
+  line-height: 0;
+  color: #FFF;
+}
+
+
+/* GAME-OVER */
+.Game-over {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Game-over h1, h2 {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.Game-over h1 {
+  color: #FFF;
+  font-size: 160px;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+.Game-over h2 {
+  font-size: 200px;
+  color: #222;
+  font-family: 'ninjaruto';
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #FFF;
+  margin: 80px 0;
+}
+
+.Game-over-score {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.Game-over-score > span {
+  display: block;
+  color: #FFF;
+  font-size: 200px;
+  font-weight: bold;
+}
+.Game-over-score > span:first-child { width: 30%; text-align: center; margin-right: 5%; }
+.Game-over-score > span:last-child { width: 30%; text-align: center; margin-left: 5%; }
+
+
+/* MATCH-CANCELLED */
+.Game-cancelled {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Game-cancelled h1 {
+  color: #FFF;
+  font-size: 160px;
+  font-style: italic;
+  text-transform: uppercase;
+}

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'ninjaruto';
-  src: url('./njnaruto.ttf');
+  src: url('assets/njnaruto.ttf');
 }
 
 html {
-  background: url('./background.jpg') no-repeat center center fixed;
+  background: url('assets/background.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
@@ -18,3 +18,8 @@ body, html {
 #root {
   height: 100%;
 }
+
+/* IMPORT STYLES */
+@import "style/App.css";
+@import "style/Main.css";
+@import "style/Game.css";

@@ -1,17 +1,17 @@
 import datetime
-from player import *
-
-GAME_NOT_STARTED = "not_started"
-GAME_IN_PROGRESS = "in_progress"
-GAME_OVER = "over"
-GAME_CANCELLED = "cancelled"
 
 class MatchException(Exception):
     pass
 
 class Match:
+    MATCH_NOT_STARTED,\
+    MATCH_IN_PROGRESS,\
+    MATCH_OVER,\
+    MATCH_CANCELLED\
+    = range(4)
+
     def __init__(self):
-        self.state = GAME_NOT_STARTED
+        self.state = Match.MATCH_NOT_STARTED
 
     def __str__(self):
         output = " MATCH SCORE ".center(41, "#") + "\n"
@@ -22,15 +22,13 @@ class Match:
         output += "".center(41, "#")
         return output
 
-    def start(self, player_1, player_2):
-        self.state = GAME_IN_PROGRESS
+    def start(self, card_id_1, card_id_2):
+        self.state = Match.MATCH_IN_PROGRESS
         self.date = datetime.datetime.now()
-        self.player_1 = MatchPlayer(player_1)
-        self.player_2 = MatchPlayer(player_2)
+        self.player_1 = MatchPlayer(card_id_1)
+        self.player_2 = MatchPlayer(card_id_2)
 
     def update_score(self, player_number, increment = True):
-        if not self.state == GAME_IN_PROGRESS:
-            raise MatchException("Game is not in progress")
 
         # Elect player and opponent given player_number
         player = self.player_1 if player_number == 1 else self.player_2
@@ -47,14 +45,12 @@ class Match:
         # Evaluate match
         if player.score >= 11 and player.score > opponent.score + 1:
             # Game over
-            self.state = GAME_OVER
-            self.winner = player
+            self.state = Match.MATCH_OVER
 
     def cancel_match(self):
-        self.state = GAME_CANCELLED
+        self.state = Match.MATCH_CANCELLED
 
-
-class MatchPlayer(Player):
-    def __init__(self, player):
-        self.name = player.name
+class MatchPlayer:
+    def __init__(self, card_id):
+        self.card_id = card_id
         self.score = 0
