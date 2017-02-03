@@ -5,7 +5,7 @@ const playersReducer = (state = {}, action) => {
     case 'RECEIVE_PLAYERS':
       return {
         list: action.players.slice(0),
-        map: keyBy(action.players, 'cardId')
+        map: keyBy(action.players, 'cardid')
       };
     default:
       return state;
