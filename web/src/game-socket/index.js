@@ -9,4 +9,11 @@ socket.on('connect', () => {
   console.log('WebSocket connected')
 });
 
-export default socket;
+const configureSocket = dispatch => {
+  socket.on('GAME_EVENT', action => dispatch(action));
+}
+
+export {
+  socket,
+  configureSocket
+}

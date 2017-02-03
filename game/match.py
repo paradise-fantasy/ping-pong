@@ -1,5 +1,4 @@
 import datetime
-from player import *
 
 class MatchException(Exception):
     pass
@@ -23,11 +22,11 @@ class Match:
         output += "".center(41, "#")
         return output
 
-    def start(self, player_1, player_2):
+    def start(self, card_id_1, card_id_2):
         self.state = Match.MATCH_IN_PROGRESS
         self.date = datetime.datetime.now()
-        self.player_1 = MatchPlayer(player_1)
-        self.player_2 = MatchPlayer(player_2)
+        self.player_1 = MatchPlayer(card_id_1)
+        self.player_2 = MatchPlayer(card_id_2)
 
     def update_score(self, player_number, increment = True):
 
@@ -51,22 +50,7 @@ class Match:
     def cancel_match(self):
         self.state = Match.MATCH_CANCELLED
 
-    def to_dict(self):
-        return {
-            "state": self.state,
-            "date": self.date.isoformat(),
-            "player_1": self.player_1.to_dict(),
-            "player_2": self.player_2.to_dict()
-        }
-
-
-class MatchPlayer(Player):
-    def __init__(self, player):
-        self.name = player.name
+class MatchPlayer:
+    def __init__(self, card_id):
+        self.card_id = card_id
         self.score = 0
-
-    def to_dict(self):
-        return {
-            "name": self.name,
-            "score": self.score
-        }

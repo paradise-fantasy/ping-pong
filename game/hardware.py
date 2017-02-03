@@ -9,6 +9,8 @@ class SimulatedHardware:
             try:
                 x = str(raw_input("Action: ")).lower().strip()
                 break
+            except KeyboardInterrupt:
+                return Action(Action.EXIT)
             except ValueError:
                 print "Not a valid option, type 'h' for help"
 
@@ -23,9 +25,12 @@ class SimulatedHardware:
         elif x == "3":
             return Action(Action.BOTH_BUTTONS_LONG_PRESS)
         elif x == "x":
-            return Action(Action.CARD_SWIPE, { "card_id": str(randint(1, 5)) })
+            return Action(Action.CARD_SWIPE, str(randint(1, 9)) )
         elif x == "h":
-            print "The following actions can be input:\n1:\tButton 1 pressed\n2:\tButton 2 pressed\n11:\tButton 1 pressed long\n22:\tButton 2 pressed long\n3:\tBoth buttons pressed long\nx:\tCard swiped (random data created)\nh:\tShow this information\n"
+            print "The following actions can be input:\n1:\tButton 1 pressed\n2:\tButton 2 pressed\n11:\tButton 1 pressed long\n22:\tButton 2 pressed long\n3:\tBoth buttons pressed long\nx:\tCard swiped (random data created)\nexit:\tExits the program\nh:\tShow this information\n"
             return self.get_next_action()
+        elif x == "exit":
+            return Action(Action.EXIT)
         else:
             print "Not a valid option, type 'h' for help"
+            return Action(Action.NONE)

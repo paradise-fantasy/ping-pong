@@ -1,133 +1,124 @@
-import GameSocket from '../game-socket'
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { socket as GameSocket } from '../game-socket'
 
 class Game extends Component {
   constructor() {
     super();
-
-    this.state = {
-      status: "Game in progress",
-      player_1: {
-        name: "",
-        score: 0
-      },
-      player_2: {
-        name: "",
-        score: 0
-      }
-    };
-
-    this.onMatchOver = this.onMatchOver.bind(this);
-    this.onMatchCancelled = this.onMatchCancelled.bind(this);
-    this.onPlayer1Score = this.onPlayer1Score.bind(this);
-    this.onPlayer2Score = this.onPlayer2Score.bind(this);
-    this.onPlayer1Revert = this.onPlayer1Revert.bind(this);
-    this.onPlayer2Revert = this.onPlayer2Revert.bind(this);
-    this.removeListeners = this.removeListeners.bind(this);
+    this.gameEventListener = this.gameEventListener.bind(this);
   }
 
   componentDidMount() {
-    GameSocket.on('MATCH_OVER', this.onMatchOver);
-    GameSocket.on('MATCH_CANCELLED', this.onMatchCancelled);
-    GameSocket.on('PLAYER_1_SCORE_INC', this.onPlayer1Score);
-    GameSocket.on('PLAYER_2_SCORE_INC', this.onPlayer2Score);
-    GameSocket.on('PLAYER_1_SCORE_DEC', this.onPlayer1Revert);
-    GameSocket.on('PLAYER_2_SCORE_DEC', this.onPlayer2Revert);
-  }
-
-  onMatchOver(match) {
-    match.status = "Match is over, ";
-    match.status += match.player_1.score > match.player_2.score ? match.player_1.name : match.player_2.name;
-    match.status += " has won!";
-
-    this.setState(match);
+    GameSocket.on('GAME_EVENT', this.gameEventListener);
     setTimeout(() => {
-      this.removeListeners();
-      this.props.router.push('/');
+      this.props.dispatch({ type: 'MATCH_INTRO_OVER' });
     }, 5000);
   }
 
-  onMatchCancelled() {
-    this.setState({ status: 'Match cancelled!' });
-    setTimeout(() => {
-      this.removeListeners();
-      this.props.router.push('/');
-    }, 5000);
-  }
-
-  onPlayer1Score(match) {
-    console.log(match);
-    this.setState(match);
-  }
-
-  onPlayer2Score(match) {
-    console.log(match);
-    this.setState(match);
-  }
-
-  onPlayer1Revert(match) {
-    console.log(match);
-    this.setState(match);
-  }
-
-  onPlayer2Revert(match) {
-    console.log(match);
-    this.setState(match);
-  }
-
-  removeListeners() {
-    GameSocket.removeListener('MATCH_OVER', this.onMatchOver);
-    GameSocket.removeListener('MATCH_CANCELLED', this.onMatchCancelled);
-    GameSocket.removeListener('PLAYER_1_SCORE_INC', this.onPlayer1Score);
-    GameSocket.removeListener('PLAYER_2_SCORE_INC', this.onPlayer2Score);
-    GameSocket.removeListener('PLAYER_1_SCORE_DEC', this.onPlayer1Revert);
-    GameSocket.removeListener('PLAYER_2_SCORE_DEC', this.onPlayer2Revert);
+  gameEventListener(action) {
+    switch (action.type) {
+      case 'MATCH_OVER':
+      case 'MATCH_CANCELLED':
+      GameSocket.removeListener('GAME_EVENT', this.gameEventListener);
+        setTimeout(() => {
+          this.props.dispatch({ type: 'RESET_MATCH' })
+          this.props.router.push('/');
+        }, 5000);
+        break;
+    }
   }
 
   render() {
+    const { game, player1, player2 } = this.props;
+
+    let winner = {}, loser = {};
+    if (game.state == 'over') {
+      winner = game.score1 > game.score2 ? player1 : player2;
+      loser = game.score1 > game.score2 ? player2 : player1;
+    }
+
     return (
       <div className="Game">
-        <h1>This is a game</h1>
-        <h2>{this.state.status}</h2>
-        <p>{this.state.player_1.name}: {this.state.player_1.score}</p>
-        <p>{this.state.player_2.name}: {this.state.player_2.score}</p>
+        { game.state == 'starting' ?
+          <div className="Game-starting">
+            <div>
+              <h1>Match Starting</h1>
+              <h2>{player1.name}</h2>
+              <h3>vs.</h3>
+              <h2>{player2.name}</h2>
+            </div>
+          </div>
+          : null
+        }
+
+        { game.state == 'started' ?
+          <div className="Game-started">
+            <div className="Game-player player-1">
+              <div>
+                <h1 className="Game-player-name">{player1.name}</h1>
+                <h1 className="Game-player-score">{game.score1}</h1>
+              </div>
+            </div>
+            <div className="Game-player player-2">
+              <div>
+                <h1 className="Game-player-name">{player2.name}</h1>
+                <h1 className="Game-player-score">{game.score2}</h1>
+              </div>
+            </div>
+          </div>
+          : null
+        }
+
+        { game.state == 'over' ?
+          <div className="Game-over">
+            <div>
+              <h1>Winner!</h1>
+              <h2>{winner.name}</h2>
+              <div className="Game-over-score">
+                <span>{game.score1}</span>
+                <span>-</span>
+                <span>{game.score2}</span>
+              </div>
+            </div>
+          </div>
+          : null
+        }
+
+        { game.state == 'cancelled' ?
+          <div className="Game-cancelled">
+            <h1>Match Cancelled</h1>
+          </div>
+          : null
+        }
       </div>
     )
   }
 }
-/*
 
-GameSocket.on('NEW_MATCH_STARTED', (match) => {
-  console.log('new match started', match)
-});
+Game.defaultProps = {
+  player1: {
+    name: 'Player 1'
+  },
+  player2: {
+    name: 'Player 2'
+  },
+  game: {
+    score1: 0,
+    score2: 0
+  }
+}
 
-GameSocket.on('MATCH_CANCELLED', (match) => {
-  console.log('match cancelled', match)
-});
+const mapStateToProps = state => {
+  const props = {};
 
-GameSocket.on('PLAYER_1_JOINED', (player) => {
-  console.log('player 1 joined', player)
-});
+  if (state.game.player1) props.player1 = state.players.map[state.game.player1]; // Grab the full player info
+  if (state.game.player2) props.player2 = state.players.map[state.game.player2]; // Grab the full player info
 
-GameSocket.on('GAME_OVER', (match) => {
-  console.log('match over', match);
-});
+  return {
+    ...props,
+    game: state.game
+  };
+};
 
-GameSocket.on('PLAYER_1_SCORE_INC', (match) => {
-  console.log('player 1 scored', match);
-});
-
-GameSocket.on('PLAYER_2_SCORE_INC', (match) => {
-  console.log('player 2 scored', match);
-});
-
-GameSocket.on('PLAYER_1_SCORE_DEC', (match) => {
-  console.log('player 1 reverted point', match);
-});
-
-GameSocket.on('PLAYER_2_SCORE_DEC', (match) => {
-  console.log('player 2 reverted point', match);
-});
-
-*/
-export default Game;
+export default connect(mapStateToProps)(Game);
