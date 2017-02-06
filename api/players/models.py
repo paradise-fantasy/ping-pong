@@ -5,7 +5,7 @@ from django.db import models
 class Player(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     name = models.TextField()
-    cardid = models.TextField(unique=True)
+    cardid = models.CharField(max_length=32, unique=True)
     profile_picture = models.URLField(blank=True, default='')
     games_played = models.IntegerField(default=0)
     games_won = models.IntegerField(default=0)
