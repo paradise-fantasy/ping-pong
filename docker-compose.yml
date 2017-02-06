@@ -1,0 +1,22 @@
+version: '2'
+services:
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=paradise
+      - MYSQL_PASSWORD=paradise2017
+      - MYSQL_DATABASE=ping-pong
+  api:
+    build: ./api
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./api:/code/api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - MYSQL_USER=paradise
+      - MYSQL_PASSWORD=paradise2017
+      - MYSQL_DATABASE=ping-pong
