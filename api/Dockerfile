@@ -1,4 +1,4 @@
-FROM python:2.7
+FROM resin/raspberrypi-python:2.7
 ENV PYTHONUNBUFFERED 1
 RUN mkdir -p /code/api
 WORKDIR /code/api
