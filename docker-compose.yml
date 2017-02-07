@@ -7,6 +7,7 @@ services:
       - MYSQL_USER=paradise
       - MYSQL_PASSWORD=paradise2017
       - MYSQL_DATABASE=ping-pong
+
   api:
     build: ./api
     command: python manage.py runserver 0.0.0.0:8000
@@ -16,7 +17,16 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - web
     environment:
       - MYSQL_USER=paradise
       - MYSQL_PASSWORD=paradise2017
       - MYSQL_DATABASE=ping-pong
+
+  web:
+    build: ./web
+    volumes:
+      - ./web:/code/web
+      - /code/web/node_modules
+    ports:
+      - "3000:3000"
