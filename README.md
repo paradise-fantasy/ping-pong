@@ -1,11 +1,11 @@
 # ping-pong
 Sick app for bordtennisbord
 
-## Docker-stuff
+# Med Docker
 Prøver å fase inn docker. For å kjøre prosjektet med docker må du ha installert "docker" og "docker-compose" (tror begge er inkludert i docker engine). Deretter må du kjøre følgende (fra roten av prosjektet):
 
-```
-docker-compose build # Bygger api-bildet
+```bash
+docker-compose build # Bygger bildene for api og web
 docker-compose run api python manage.py migrate # Om du får feilmelding, prøv på nytt
 docker-compose up # Starter opp prosjektet
 ```
@@ -16,8 +16,23 @@ docker-compose up # Starter opp prosjektet
 
 `docker-compose up` starter opp prosjektet og bør gjøre tjenesten tilgjengelig på `http://localhost:8000`.
 
+# Uten Docker
+
+## API
+__NB: Krever MySQL__
+
+Installér pip-moduler fra `requirements.txt`
+
+Sett riktige innstillinger for database i `main/settings.py`. Man må sette riktige parametere under `DATABASES`.
+
+Start API-et med:
+
+```
+python manage.py runserver 0.0.0.0:8000
+```
+
 ## Game
-Installér pip-moduler fra requirements.txt.
+Installér pip-moduler fra `requirements.txt`.
 Kjør med:
 
 ```
