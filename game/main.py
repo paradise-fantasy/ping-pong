@@ -17,4 +17,4 @@ if __name__ == "__main__":
     # Start the game
     game = Game(socket=socketio)
     game.start()
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0', port=5000)

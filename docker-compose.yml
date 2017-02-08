@@ -17,16 +17,26 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - web
     environment:
       - MYSQL_USER=paradise
       - MYSQL_PASSWORD=paradise2017
       - MYSQL_DATABASE=ping-pong
 
-  web:
-    build: ./web
+  game:
+    build: ./game
+    command: python main.py
     volumes:
-      - ./web:/code/web
-      - /code/web/node_modules
+      - ./game:/code/game
     ports:
-      - "3000:3000"
+      - "5000:5000"
+    environment:
+      - API_HOST=api
+      - API_PORT=8000
+
+  # web:
+  #   build: ./web
+  #   volumes:
+  #     - ./web:/code/web
+  #     - /code/web/node_modules
+  #   ports:
+  #     - "3000:3000"

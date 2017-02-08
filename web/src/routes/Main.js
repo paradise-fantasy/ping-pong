@@ -3,19 +3,6 @@ import { connect } from 'react-redux';
 
 import { socket as GameSocket } from '../game-socket'
 
-// TODO: REMOVE
-const players = [
-  { name: 'Raymi', rating: 1723, score: '17-3', cardId: 1 },
-  { name: 'Håvard', rating: 1541, score: '11-5', cardId: 2 },
-  { name: 'Frederik', rating: 1327, score: '10-4', cardId: 3 },
-  { name: 'Raymi', rating: 1723, score: '17-3', cardId: 4 },
-  { name: 'Håvard', rating: 1541, score: '11-5', cardId: 5 },
-  { name: 'Frederik', rating: 1327, score: '10-4', cardId: 6 },
-  { name: 'Raymi', rating: 1723, score: '17-3', cardId: 7 },
-  { name: 'Håvard', rating: 1541, score: '11-5', cardId: 8 },
-  { name: 'Frederik', rating: 1327, score: '10-4', cardId: 9 }
-]
-
 class Main extends Component {
   constructor() {
     super();
@@ -24,10 +11,16 @@ class Main extends Component {
 
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
-    this.props.dispatch({
-      type: 'RECEIVE_PLAYERS',
-      players
-    });
+
+    fetch('http://129.241.208.165:8000/players/')
+      .then(res => res.json())
+      .then(players => {
+        this.props.dispatch({
+          type: 'RECEIVE_PLAYERS',
+          players
+        });
+      })
+      .catch(err => console.error(err));
   }
 
   gameEventListener(action) {
@@ -51,12 +44,12 @@ class Main extends Component {
           <table>
             <tbody>
             {
-              players.map((player, i) =>
+              this.props.players.sort((a, b) => b.rating - a.rating).map((player, i) =>
                 <tr key={i}>
-                  <td>{i}.</td>
+                  <td>{i+1}.</td>
                   <td>{player.name}</td>
                   <td>{player.rating}</td>
-                  <td>({player.score})</td>
+                  <td>{player.games_won} wins ({player.games_played} played)</td>
                 </tr>
               )
             }
@@ -85,6 +78,10 @@ class Main extends Component {
   }
 }
 
+Main.defaultProps = {
+  players: []
+}
+
 const mapStateToProps = state => {
   const props = {};
 
@@ -94,6 +91,7 @@ const mapStateToProps = state => {
 
   return {
     ...props,
+    players: state.players.list,
     game: state.game
   };
 };

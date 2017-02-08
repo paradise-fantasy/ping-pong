@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
+import requests
 from threading import Thread
 from actions import Action
 from hardware import SimulatedHardware
 from match import Match
+
+API_HOST = os.environ['API_HOST'] if 'API_HOST' in os.environ else 'localhost'
+API_PORT = os.environ['API_PORT'] if 'API_PORT' in os.environ else '8000'
+API_URL = 'http://%s:%s' % (API_HOST, API_PORT)
 
 class Game(Thread):
     STATE_IDLE, STATE_IN_GAME = range(2)
@@ -58,7 +64,7 @@ class Game(Thread):
         print "starting unranked match"
 
         # Create the match object and start
-        self.match = Match()
+        self.match = Match(is_ranked=False)
         self.player_1 = None
         self.player_2 = None
         self.match.start(self.player_1, self.player_2)
@@ -141,7 +147,10 @@ class Game(Thread):
 
         if self.match.state == Match.MATCH_OVER:
             print "Match over!"
-            # TODO: Update ratings
+
+            if self.match.is_ranked:
+                # Post game to API
+                self.post_match()
 
             # Set correct state
             self.state = Game.STATE_IDLE
@@ -150,3 +159,19 @@ class Game(Thread):
 
             # Broadcast event
             self.socket.emit('GAME_EVENT', { 'type': 'MATCH_OVER' })
+
+
+    def post_match(self):
+        print 'Posting match to API'
+        id_1 = requests.get('%s/me/%s' % (API_URL, self.player_1)).json()['id']
+        id_2 = requests.get('%s/me/%s' % (API_URL, self.player_2)).json()['id']
+
+        data = {
+            'player_1': id_1,
+            'player_2': id_2,
+            'score_1': self.match.player_1.score,
+            'score_2': self.match.player_2.score,
+            'winner': 1 if self.match.player_1.score > self.match.player_2.score else 2
+        }
+
+        requests.post('%s/matches/' % API_URL, json=data)
