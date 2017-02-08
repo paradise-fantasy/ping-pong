@@ -12,7 +12,7 @@ class Main extends Component {
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
 
-    fetch('http://129.241.208.165:8000/players/')
+    fetch('http://localhost:8000/players/')
       .then(res => res.json())
       .then(players => {
         this.props.dispatch({

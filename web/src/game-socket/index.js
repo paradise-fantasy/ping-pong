@@ -11,6 +11,9 @@ socket.on('connect', () => {
   console.log('WebSocket connected')
 });
 
+socket.on('GAME_EVENT', msg => console.log(msg));
+socket.on('MESSAGE', msg => console.log(msg));
+
 const configureSocket = dispatch => {
   socket.on('GAME_EVENT', action => dispatch(action));
 }

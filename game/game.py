@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import gevent
 import requests
-from threading import Thread
 from actions import Action
 from hardware import SimulatedHardware
 from match import Match
@@ -11,11 +11,10 @@ API_HOST = os.environ['API_HOST'] if 'API_HOST' in os.environ else 'localhost'
 API_PORT = os.environ['API_PORT'] if 'API_PORT' in os.environ else '8000'
 API_URL = 'http://%s:%s' % (API_HOST, API_PORT)
 
-class Game(Thread):
+class Game:
     STATE_IDLE, STATE_IN_GAME = range(2)
 
     def __init__(self, socket):
-        Thread.__init__(self)
         self.state = Game.STATE_IDLE
         self.socket = socket
         self.hardware = SimulatedHardware()
@@ -23,11 +22,16 @@ class Game(Thread):
         self.player_1 = None
         self.player_2 = None
 
-    def run(self):
+    def start(self):
+        self.hardware.start()
         running = True
         while running:
-            # TODO: Consider using a buffer for actions
+            gevent.sleep(1) # Important!
             action = self.hardware.get_next_action()
+
+            if action.type == Action.NONE:
+                continue
+
             print "Got action: " + str(action.type)
 
             if action.type == Action.EXIT:
