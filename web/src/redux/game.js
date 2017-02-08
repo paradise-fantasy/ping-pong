@@ -16,20 +16,32 @@ const gameReducer = (state = {}, action) => {
       return {
         ...state,
         state: 'starting',
+        isRanked: true,
         score1: 0,
         score2: 0,
-        started: action.date
+        started: action.date,
+        ratingGains: {
+          player_1: { wins: 0, loses: 0 },
+          player_2: { wins: 0, loses: 0 }
+        }
       };
 
     case 'NEW_UNRANKED_MATCH_STARTED':
       return {
         ...state,
         state: 'starting',
+        isRanked: false,
         player1: null,
         player2: null,
         score1: 0,
         score2: 0,
         started: action.date
+      };
+
+    case 'RECEIVE_MATCH_RATING_GAINS':
+      return {
+        ...state,
+        ratingGains: action.ratingGains
       };
 
     case 'MATCH_INTRO_OVER':

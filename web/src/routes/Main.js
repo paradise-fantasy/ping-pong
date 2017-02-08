@@ -12,10 +12,9 @@ class Main extends Component {
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
 
-    fetch('http://129.241.200.204:5000/api/players')
+    fetch('http://129.241.208.165:8000/players/')
       .then(res => res.json())
       .then(players => {
-        console.log('hey players', players);
         this.props.dispatch({
           type: 'RECEIVE_PLAYERS',
           players
@@ -45,12 +44,12 @@ class Main extends Component {
           <table>
             <tbody>
             {
-              this.props.players.map((player, i) =>
+              this.props.players.sort((a, b) => b.rating - a.rating).map((player, i) =>
                 <tr key={i}>
                   <td>{i+1}.</td>
                   <td>{player.name}</td>
                   <td>{player.rating}</td>
-                  <td>{player.wins} wins ({player.games_played} played)</td>
+                  <td>{player.games_won} wins ({player.games_played} played)</td>
                 </tr>
               )
             }

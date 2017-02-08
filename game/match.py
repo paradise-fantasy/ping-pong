@@ -10,8 +10,9 @@ class Match:
     MATCH_CANCELLED\
     = range(4)
 
-    def __init__(self):
+    def __init__(self, is_ranked=True):
         self.state = Match.MATCH_NOT_STARTED
+        self.is_ranked = is_ranked
 
     def __str__(self):
         output = " MATCH SCORE ".center(41, "#") + "\n"

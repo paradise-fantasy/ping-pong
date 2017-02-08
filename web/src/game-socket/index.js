@@ -3,7 +3,9 @@
  */
 import SocketIO from 'socket.io-client';
 
-const socket = SocketIO('http://localhost:5000')
+const SOCKET_HOST = process.env.REACT_APP_SOCKET_HOST || 'localhost';
+const SOCKET_PORT = process.env.REACT_APP_SOCKET_PORT || '5000';
+const socket = SocketIO(`http://${SOCKET_HOST}:${SOCKET_PORT}`);
 
 socket.on('connect', () => {
   console.log('WebSocket connected')
