@@ -20,7 +20,7 @@ class SimulatedHardware(Thread):
 
     def run(self):
         self.running = True
-        t = threading.Thread(target=read_card, args=self)
+        t = Thread(target=read_card, args=[self])
         t.start()
         while self.running:
             try:
