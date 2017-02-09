@@ -4,18 +4,29 @@
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  height: 150px;
+  padding-bottom: 10px;
 }
 
 .App-header {
   background-color: #222;
-  height: 150px;
-  padding: 20px;
+  height: 300px;
+  padding: 50px;
   color: white;
 }
 
 .App-intro {
   font-size: large;
+}
+
+.Registration {
+    padding-top: 10px;
+    padding-bottom: 50px;
+}
+
+.api-error {
+    text-align: left;
+    color: red;
 }
 
 @keyframes App-logo-spin {
