@@ -6,3 +6,5 @@ RUN pip install -r requirements.txt
 ADD . /code/game/
 
 EXPOSE 5000
+
+CMD ["python", "main.py"]
