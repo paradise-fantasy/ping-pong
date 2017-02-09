@@ -32,11 +32,3 @@ services:
     environment:
       - API_HOST=api
       - API_PORT=8000
-
-  # web:
-  #   build: ./web
-  #   volumes:
-  #     - ./web:/code/web
-  #     - /code/web/node_modules
-  #   ports:
-  #     - "3000:3000"
