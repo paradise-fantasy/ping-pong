@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { FormGroup, Button, FormControl, ControlLabel, Form, Col, HelpBlock } from 'react-bootstrap';
 
+const HTTPS_ENABLED = !!process.env.REACT_APP_HTTPS_ENABLED;
+const API_HOST = process.env.REACT_APP_API_HOST || 'localhost';
+const API_PORT = process.env.REACT_APP_API_PORT || 8000;
+const API_URL = `${HTTPS_ENABLED ? 'https' : 'http'}://${API_HOST}:${API_PORT}`;
 
 function postNewPlayer(form) {
-    return fetch("http://129.241.208.183:8000/players/", {
+    return fetch(`${API_URL}/players/`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
