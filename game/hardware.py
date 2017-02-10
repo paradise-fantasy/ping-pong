@@ -2,6 +2,7 @@ from threading import Thread
 from random import randint
 from actions import Action
 from read_card import read_card
+from button_event import button_event
 
 # TODO: Create real module
 class SimulatedHardware(Thread):
@@ -20,8 +21,10 @@ class SimulatedHardware(Thread):
 
     def run(self):
         self.running = True
-        t = Thread(target=read_card, args=[self])
-        t.start()
+        card = Thread(target=read_card, args=[self])
+        buttons = Thread(target=button_event, args=[self])
+        card.start()
+        buttons.start()
         while self.running:
             try:
                 action = self.read_action()
