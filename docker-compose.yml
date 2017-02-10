@@ -32,3 +32,14 @@ services:
     environment:
       - API_HOST=api
       - API_PORT=8000
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - game

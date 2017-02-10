@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { socket as GameSocket } from '../game-socket'
+import { socket as GameSocket } from '../game-socket';
+import { getPlayers } from '../api';
 
 class Main extends Component {
   constructor() {
@@ -12,15 +13,12 @@ class Main extends Component {
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
 
-    fetch('http://localhost:8000/players/')
-      .then(res => res.json())
-      .then(players => {
-        this.props.dispatch({
-          type: 'RECEIVE_PLAYERS',
-          players
-        });
-      })
-      .catch(err => console.error(err));
+    getPlayers().then(players => {
+      this.props.dispatch({
+        type: 'RECEIVE_PLAYERS',
+        players
+      });
+    });
   }
 
   gameEventListener(action) {
@@ -30,6 +28,8 @@ class Main extends Component {
         GameSocket.removeListener('GAME_EVENT', this.gameEventListener);
         this.props.router.push('/game');
         break;
+      default:
+        return;
     }
   }
 

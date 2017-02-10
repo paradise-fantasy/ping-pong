@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { socket as GameSocket } from '../game-socket'
+import { getPlayerRatingGains } from '../api';
 
 class Game extends Component {
   constructor() {
@@ -13,8 +14,7 @@ class Game extends Component {
     // Fetch rating gains
     const { player1, player2 } = this.props;
     if (player1.id && player2.id) {
-      fetch(`http://localhost:8000/players/${player1.id}/${player2.id}`)
-        .then(res => res.json())
+      getPlayerRatingGains(player1.id, player2.id)
         .then(ratingGains => this.props.dispatch({
           type: 'RECEIVE_MATCH_RATING_GAINS',
           ratingGains
@@ -37,21 +37,22 @@ class Game extends Component {
           this.props.router.push('/');
         }, 5000);
         break;
+      default:
+        return;
     }
   }
 
   render() {
     const { game, player1, player2 } = this.props;
 
-    let winner = {}, loser = {}, ratingGain = 0;
-    if (game.state == 'over') {
+    let winner = {};
+    if (game.state === 'over') {
       winner = game.score1 > game.score2 ? player1 : player2;
-      loser = game.score1 > game.score2 ? player2 : player1;
     }
 
     return (
       <div className="Game">
-        { game.state == 'starting' ?
+        { game.state === 'starting' ?
           <div className="Game-starting">
             <div>
               <h1>Match Starting</h1>
@@ -77,7 +78,7 @@ class Game extends Component {
           : null
         }
 
-        { game.state == 'started' ?
+        { game.state === 'started' ?
           <div className="Game-started">
             <div className="Game-player player-1">
               <div>
@@ -95,7 +96,7 @@ class Game extends Component {
           : null
         }
 
-        { game.state == 'over' ?
+        { game.state === 'over' ?
           <div className="Game-over">
             <div>
               <h1>Winner!</h1>
@@ -115,7 +116,7 @@ class Game extends Component {
           : null
         }
 
-        { game.state == 'cancelled' ?
+        { game.state === 'cancelled' ?
           <div className="Game-cancelled">
             <h1>Match Cancelled</h1>
           </div>
