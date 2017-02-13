@@ -26,7 +26,7 @@ class Game:
         self.hardware.start()
         running = True
         while running:
-            gevent.sleep(1) # Important!
+            gevent.sleep(0.1) # Important!
             action = self.hardware.get_next_action()
 
             if action.type == Action.NONE:
