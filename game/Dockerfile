@@ -1,16 +1,9 @@
-#FROM resin/raspberrypi-python:2.7
-FROM resin/rpi-raspbian:latest
-
+FROM resin/rpi-raspbian:jessie
 RUN apt-get update && apt-get install -y \
-	build-essential \
-	gcc \
-	python2 \
-	python2-dev \
-	python2-pip \
-	python2-virtualenv \
-	--no-install-recommends && \
-	rm -rf /var/lib/apt/lists/*
-
+python2.7 \
+python2.7-dev \
+python2.7-pip \
+python2.7-virtualenv
 
 RUN mkdir -p /code/game
 WORKDIR /code/game
