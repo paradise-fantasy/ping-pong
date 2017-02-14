@@ -1,16 +1,18 @@
-FROM resin/rpi-raspbian:jessie
-RUN apt-get update && apt-get install -y \
-python2.7 \
-python2.7-dev \
-python2.7-pip \
-python2.7-virtualenv
-
+FROM resin/raspberrypi-python:2.7
 RUN mkdir -p /code/game
 WORKDIR /code/game
+
+# Cache gevent (it's soo big)
+RUN pip install gevent
+
+# Install rest of requirements
 ADD requirements.txt /code/game/
 RUN pip install -r requirements.txt
+
+# Get source code
 ADD . /code/game/
 
 EXPOSE 5000
 
 CMD ["python", "main.py"]
+

@@ -29,6 +29,9 @@ services:
       - ./game:/code/game
     ports:
       - "5000:5000"
+    devices:
+      - "/dev/mem:/dev/mem"
+    privileged: true
     environment:
       - API_HOST=api
       - API_PORT=8000
