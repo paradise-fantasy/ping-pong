@@ -34,7 +34,7 @@ services:
       - API_PORT=8000
 
   nginx:
-    image: nginx
+    image: khrall/rpi-nginx
     volumes:
       - ./public:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
