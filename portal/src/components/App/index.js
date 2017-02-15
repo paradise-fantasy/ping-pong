@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { Link } from 'react-router';
 
 import PageHeader from '../PageHeader';
 import RankedList from '../RankedList';
@@ -22,7 +23,7 @@ class App extends Component {
                 <Row>
                     <h1>
                         Not yet a player?<br />
-                        <a href="/register">Register here</a>
+                    <Link to={'/register'}>Register here</Link>
                     </h1>
                 </Row>
             </Col>
