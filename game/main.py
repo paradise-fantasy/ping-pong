@@ -1,28 +1,13 @@
-#import eventlet
-#eventlet.monkey_patch()
 #
-# import socketio
-# from game import Game
+# Note: Deleting socket.SO_REUSEPORT is a hack:
+# It forces greenlet to resolve to use SO_REUSEADDR
+# rather than SO_REUSEPORT which is apparently required
+# by the current image. Remove this and errors may occur.
 #
-# sio = socketio.Server()
-# app = socketio.Middleware(sio)
-#
-# @sio.on('connect')
-# def connect(sid, environ):
-#     print('connect ', sid)
-#
-# @sio.on('disconnect')
-# def disconnect(sid):
-#     print('disconnect ', sid)
-#
-# if __name__ == '__main__':
-#     # deploy as an eventlet WSGI server
-#     game = Game(socket=sio)
-#     eventlet.spawn_n(game.start)
-#     eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
+import socket
+del socket.SO_REUSEPORT
 
-import gevent
-
+import eventlet
 from flask import Flask
 from flask_socketio import SocketIO
 import sys
@@ -31,7 +16,7 @@ from game import Game
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
-socketio = SocketIO(app, async_mode='gevent')
+socketio = SocketIO(app, async_mode='eventlet')
 
 @socketio.on("connect")
 def on_connect():
@@ -39,6 +24,9 @@ def on_connect():
 
 if __name__ == "__main__":
     # Start the game
+    print "starting game"
     game = Game(socket=socketio)
-    gevent.spawn(game.start)
+    print "game set up"
+    eventlet.spawn_n(game.start)
+    print "game spawned"
     socketio.run(app, host='0.0.0.0')

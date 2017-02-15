@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import gevent
+import eventlet
 import requests
 from actions import Action
-from hardware import SimulatedHardware
 from match import Match
 
+USE_SIMULATED_HARDWARE = os.environ['USE_SIMULATED_HARDWARE'] if 'USE_SIMULATED_HARDWARE' in os.environ else False
+print USE_SIMULATED_HARDWARE
 API_HOST = os.environ['API_HOST'] if 'API_HOST' in os.environ else 'localhost'
 API_PORT = os.environ['API_PORT'] if 'API_PORT' in os.environ else '8000'
 API_URL = 'http://%s:%s' % (API_HOST, API_PORT)
@@ -17,18 +18,22 @@ class Game:
     def __init__(self, socket):
         self.state = Game.STATE_IDLE
         self.socket = socket
-        self.hardware = SimulatedHardware()
+        if USE_SIMULATED_HARDWARE:
+            from simulated_hardware import SimulatedHardware
+            self.hardware = SimulatedHardware()
+        else:
+            from hardware import Hardware
+            self.hardware = Hardware()
         self.match = None
         self.player_1 = None
         self.player_2 = None
 
     def start(self):
-        self.hardware.start()
+        eventlet.spawn_n(self.hardware.start)
         running = True
         while running:
-            gevent.sleep(1) # Important!
+            eventlet.sleep(0.2) # Important!
             action = self.hardware.get_next_action()
-
             if action.type == Action.NONE:
                 continue
 
