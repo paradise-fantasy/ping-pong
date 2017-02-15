@@ -1,1 +1,5 @@
 public
+production.yml
+
+# People keep npm-ing in wrong directory
+npm-debug.log 
