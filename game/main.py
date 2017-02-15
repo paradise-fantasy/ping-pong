@@ -1,8 +1,13 @@
+#
+# Note: Deleting socket.SO_REUSEPORT is a hack:
+# It forces greenlet to resolve to use SO_REUSEADDR
+# rather than SO_REUSEPORT which is apparently required
+# by the current image. Remove this and errors may occur.
+#
 import socket
 del socket.SO_REUSEPORT
 
 import eventlet
-
 from flask import Flask
 from flask_socketio import SocketIO
 import sys
