@@ -15,13 +15,14 @@ RUN mkdir -p /code/game
 WORKDIR /code/game
 
 # Install rest of requirements
-ADD requirements.txt /code/game/
+COPY requirements.txt /code/game/
 RUN pip install -r requirements.txt
 
 # Get source code
-ADD . /code/game/
+COPY . /code/game/
+
+# Need this for eventlet D:
+COPY etc.protocols /etc/protocols
 
 EXPOSE 5000
-
 CMD ["python", "main.py"]
-

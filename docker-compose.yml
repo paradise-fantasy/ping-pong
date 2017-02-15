@@ -4,9 +4,9 @@ services:
     image: hypriot/rpi-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_USER=paradise
-      - MYSQL_PASSWORD=paradise2017
-      - MYSQL_DATABASE=ping-pong
+      - MYSQL_USER=mysql_user
+      - MYSQL_PASSWORD=mysql_password
+      - MYSQL_DATABASE=mysql_database
 
   api:
     build: ./api
@@ -18,9 +18,9 @@ services:
     depends_on:
       - db
     environment:
-      - MYSQL_USER=paradise
-      - MYSQL_PASSWORD=paradise2017
-      - MYSQL_DATABASE=ping-pong
+      - MYSQL_USER=mysql_user
+      - MYSQL_PASSWORD=mysql_password
+      - MYSQL_DATABASE=mysql_database
 
   game:
     build: ./game
@@ -29,12 +29,10 @@ services:
       - ./game:/code/game
     ports:
       - "5000:5000"
-    devices:
-      - "/dev/mem:/dev/mem"
-    privileged: true
     environment:
       - API_HOST=api
       - API_PORT=8000
+      - USE_SIMULATED_HARDWARE=true
 
   nginx:
     image: khrall/rpi-nginx

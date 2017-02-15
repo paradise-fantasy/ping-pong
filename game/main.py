@@ -1,25 +1,5 @@
-#import eventlet
-#eventlet.monkey_patch()
-#
-# import socketio
-# from game import Game
-#
-# sio = socketio.Server()
-# app = socketio.Middleware(sio)
-#
-# @sio.on('connect')
-# def connect(sid, environ):
-#     print('connect ', sid)
-#
-# @sio.on('disconnect')
-# def disconnect(sid):
-#     print('disconnect ', sid)
-#
-# if __name__ == '__main__':
-#     # deploy as an eventlet WSGI server
-#     game = Game(socket=sio)
-#     eventlet.spawn_n(game.start)
-#     eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
+import socket
+del socket.SO_REUSEPORT
 
 import eventlet
 
