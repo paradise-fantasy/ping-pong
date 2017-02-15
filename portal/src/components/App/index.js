@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
 import PageHeader from '../PageHeader';
 import RankedList from '../RankedList';
@@ -16,7 +16,15 @@ class App extends Component {
         <PageHeader headerText="Komstek Ping Pong League" />
         <div className="App-intro">
             <Col md={8} mdOffset={2} >
-                <RankedList />
+                <Row>
+                    <RankedList />
+                </Row>
+                <Row>
+                    <h1>
+                        Not yet a player?<br />
+                        <a href="/register">Register here</a>
+                    </h1>
+                </Row>
             </Col>
         </div>
 

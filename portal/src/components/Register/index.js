@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, Button, FormControl, ControlLabel, Form, Col, HelpBlock } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
 
 import PageHeader from '../PageHeader';
 
@@ -66,6 +67,7 @@ class RegisterForm extends Component {
                 this.setState({
                     success: true
                 });
+                setTimeout(browserHistory.goBack, 3000)
             }
         });
         event.preventDefault();
@@ -155,7 +157,10 @@ class RegisterForm extends Component {
                             </Button>
                         </Form>
                     : // If form has been successfully posted
-                        <h1>{this.state.name} has been successfully registered!</h1>
+                        <h1>
+                            {this.state.name} has been successfully registered!<br/>
+                            Redirecting you to front page.
+                        </h1>
                     }
                 </Col>
             </div>
