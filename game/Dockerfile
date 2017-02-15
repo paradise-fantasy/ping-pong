@@ -14,9 +14,6 @@ RUN apt-get update \
 RUN mkdir -p /code/game
 WORKDIR /code/game
 
-# Cache gevent (it's soo big)
-RUN pip install gevent
-
 # Install rest of requirements
 ADD requirements.txt /code/game/
 RUN pip install -r requirements.txt

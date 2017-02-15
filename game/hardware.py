@@ -1,13 +1,12 @@
-from threading import Thread
+import eventlet
 from random import randint
 from actions import Action
 from read_card import read_card
-from button_event import button_event
+from read_buttons import read_buttons
 
 # TODO: Create real module
-class SimulatedHardware(Thread):
+class SimulatedHardware():
     def __init__(self):
-        Thread.__init__(self)
         self.running = False
         self.actions = []
 
@@ -19,21 +18,20 @@ class SimulatedHardware(Thread):
     def insert_action(self, action):
         self.actions.append(action)
 
-    def run(self):
+    def start(self):
         self.running = True
-        card = Thread(target=read_card, args=[self])
-        buttons = Thread(target=button_event, args=[self])
-        card.start()
-        buttons.start()
-        while self.running:
-            try:
-                action = self.read_action()
-                self.insert_action(action)
-            except KeyboardInterrupt:
-                self.insert_action(Action(Action.EXIT))
-                self.running = False
-            except ValueError:
-                print "Not a valid option, type 'h' for help"
+        eventlet.spawn_n(read_card, self)
+        eventlet.spawn_n(read_buttons, self)
+        #while self.running:
+        #    time.sleep(1)
+        #    try:
+        #        action = self.read_action()
+        #        self.insert_action(action)
+        #    except KeyboardInterrupt:
+        #        self.insert_action(Action(Action.EXIT))
+        #        self.running = False
+        #    except ValueError:
+        #        print "Not a valid option, type 'h' for help"
 
     def read_action(self):
         print "Type in your action!"

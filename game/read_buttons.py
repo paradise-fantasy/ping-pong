@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
 from RPi import GPIO
-from time import time, sleep
+import eventlet
+from time import time
 from actions import Action
 
-def button_event(hardware):
+def read_buttons(hardware):
     GPIO.setmode(GPIO.BOARD)
 
     GPIO.setup(37,GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -67,4 +68,4 @@ def button_event(hardware):
             HOLD_EVENTS = False
     
         last_btn1, last_btn2 = btn1, btn2
-        sleep(0.25)
+        eventlet.sleep(0.1)

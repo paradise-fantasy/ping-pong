@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import gevent
+import eventlet
 import requests
 from actions import Action
 from hardware import SimulatedHardware
@@ -23,12 +23,11 @@ class Game:
         self.player_2 = None
 
     def start(self):
-        self.hardware.start()
+        eventlet.spawn_n(self.hardware.start)
         running = True
         while running:
-            gevent.sleep(0.1) # Important!
+            eventlet.sleep(0.2) # Important!
             action = self.hardware.get_next_action()
-
             if action.type == Action.NONE:
                 continue
 
