@@ -1,0 +1,27 @@
+.PageHeader {
+  text-align: center;
+}
+
+.PageHeader-header {
+    background: linear-gradient(
+        rgba(34,34,34, .6),
+        rgba(34,34,34, .6)),
+        url('../../assets/images/background.jpg');
+    background-size: cover;
+  height: 300px;
+  padding: 50px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+
+.PageHeader-logo {
+  animation: PageHeader-logo-spin infinite 20s linear;
+  height: 150px;
+  padding-bottom: 10px;
+}
+
+@keyframes PageHeader-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
