@@ -1,5 +1,8 @@
 # ping-pong
 Sick app for bordtennisbord
+- [Kort om arkitektur](#kort-om-arkitektur)
+- [Utvikling](#development)
+  - [API](#api)
 
 # Kort om arkitektur
 ![Basic Deployment Architecture](https://s3-eu-west-1.amazonaws.com/ping-pong.komstek.no/assets/Basic+Deployment+Architecture.png)
@@ -21,6 +24,8 @@ __Portal__: En nettside for oversikt over "ligaen", brukes også for registering
 
 __Screen__: En nettside som viser spillets gang, skal i utgangspunktet kun vises ett sted (på skjermen ved bordtennisbordet). Kommuniserer med __API__ og __Game__.
 
+Under utvikling trenger man ikke kjøre alle komponentene i applikasjonen, men man må ha alle avhengigheter kjørende. For eksempel må både __API__ og __Game__ kjøre for å kunne utvikle på __Screen__.
+
 ## Docker
 I deployment kjører vi alt i Docker. Dette har en rekke fordeler:
 - Enklere å porte applikasjonen til nye enheter
@@ -33,12 +38,40 @@ I deployment kjører vi alt i Docker. Dette har en rekke fordeler:
 
 Bruk av Docker står forklart i egen seksjon.. etter hvert
 
-
-
 # Development
 
+## API
+__Referanser__:
+- https://docs.docker.com/compose/django/
+- https://docs.djangoproject.com
+- http://www.django-rest-framework.org/
 
+For å utvikle på APIet anbefales det å bruke Docker. Ettersom APIet avhenger av en MySQL-database, og vi ikke ønsker å utvikle på produksjonsdatabasen, er det bedre å hoste en egen lokalt. Dette gjøres enkelt med `docker-compose`.
 
+```
+docker-compose build api
+docker-compose run api
+```
+
+Docker spinner automatisk opp et MySQL-bilde som APIet kan snakke med, og deretter bildet til APIet. Filene i `/api` er mountet i API-bildet, så endringer i koden skal vanligvis oppdages og oppdateres i bildet automatisk. APIet kjører på `localhost:8000`.
+
+### Hensyn ved første kjøring (migrasjoner)
+Ved første kjøring krever APIet at man utfører "migrasjoner". Migrasjoner utfører MySQL-spørringer for at databasen skal gjenspeile Django-modellene. For å kjøre migrasjoner kan man kjøre:
+
+```
+docker-compose run api python manage.py migrate
+```
+
+### Installering av nye biblioteker
+Dersom man trenger nye pip-biblioteker i APIet må man legge avhengigheten inn i `requirements.txt`, og deretter bygge bildet på nytt med `docker-compose build api`.
+
+### Lage/endre modeller - Nye migrasjoner
+Dersom man endrer eller lager nye modeller i Django må man lage og kjøre migrasjoner på databasen. Dette gjøres på følgende måte:
+
+```
+docker-compose run api python manage.py makemigrations
+docker-compose run api python manage.py migrate
+```
 
 # Med Docker
 Prøver å fase inn docker. For å kjøre prosjektet med docker må du ha installert "docker" og "docker-compose" (tror begge er inkludert i docker engine). Deretter må du kjøre følgende (fra roten av prosjektet):
