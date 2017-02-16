@@ -3,6 +3,9 @@ Sick app for bordtennisbord
 - [Kort om arkitektur](#kort-om-arkitektur)
 - [Utvikling](#development)
   - [API](#api)
+  - [Game](#game)
+  - [Screen](#screen)
+  - [Portal](#portal)
 
 # Kort om arkitektur
 ![Basic Deployment Architecture](https://s3-eu-west-1.amazonaws.com/ping-pong.komstek.no/assets/Basic+Deployment+Architecture.png)
