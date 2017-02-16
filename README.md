@@ -9,14 +9,14 @@ Sick app for bordtennisbord
 
 ## Komponentene
 Applikasjonen består av en mengde komponenter:
-- Database (MySQL)
+- DB (MySQL)
 - API (Django)
 - Game (Python med Flask-socketIO ++)
 - Portal (React)
 - Web (React)
 - Nginx (for reverse proxy)
 
-__API__: Laget i Django, bruker MySQL som database
+__API__: Laget i Django, avhenger av __DB__, MySQL-databasen.
 
 __Game__: Selve "spill-logikken". Tar input fra kortleser og knapper, kommuniserer events gjennom en websocket (Flask-socketIO) til klienten (i utgangspunktet kun screen). Når en rangert kamp er over poster den match-data til __API__.
 
@@ -73,54 +73,93 @@ docker-compose run api python manage.py makemigrations
 docker-compose run api python manage.py migrate
 ```
 
-# Med Docker
-Prøver å fase inn docker. For å kjøre prosjektet med docker må du ha installert "docker" og "docker-compose" (tror begge er inkludert i docker engine). Deretter må du kjøre følgende (fra roten av prosjektet):
-
-```bash
-docker-compose build # Bygger bildene for api og web
-docker-compose run api python manage.py migrate # Om du får feilmelding, prøv på nytt
-docker-compose up # Starter opp prosjektet
-```
-
-`docker-compose build` bygger api-bildet ved hjelp av `Dockerfile` i /api.
-
-`docker-compose run api python manage.py migrate` kjører alle "migrasjoner" for databasen, dvs at Django gjør om "modellene" våre til tables i MySQL-databasen. Ettersom du mest sannsynlig ikke alt har databasebildet vil den først laste dette ned (hypriot/rpi-mysql).
-
-`docker-compose up` starter opp prosjektet og bør gjøre tjenesten tilgjengelig på `http://localhost:8000`.
-
-# Uten Docker
-
-## API
-__NB: Krever MySQL__
-
-Installér pip-moduler fra `requirements.txt`
-
-Sett riktige innstillinger for database i `main/settings.py`. Man må sette riktige parametere under `DATABASES`.
-
-Start API-et med:
-
-```
-python manage.py runserver 0.0.0.0:8000
-```
 
 ## Game
-Installér pip-moduler fra `requirements.txt`.
-Kjør med:
+For å utvikle på Game er det greiest å kjøre i et virtuelt miljø, enten på Rasberry Pi eller på egen maskin. Game avhenger av __API__ for å kunne poste matcher, men denne avhengiheten er sjelden noe man trenger å tenke på.
+
+### Virtuelt miljø
+Den enkleste måten å utvikle på er ved å bruke et virtuelt miljø (virtual environment). Installér `virtualenv` som beskrevet [her](https://virtualenv.pypa.io) (`virtualenvwrapper` anbefales også) og lag et nytt environment. Du kan deretter installere avhengigheter med:
 
 ```
+pip install -r requirements.txt
+```
+
+__Merk__: Utvikling i virtuelt miljø, uansett om det er på RPi eller på egen maskin, er ingen garanti for at koden kommer til å kjøre i Docker-bildet. Det er lurt å jevnlig teste at koden kjører på det nye bildet.
+
+### Ekte og Simulert Hardware
+For å gjøre det mulig å utvikle både på RPi og egen maskin, har vi laget en abstraksjon av "hardware" som heter "simulated hardware". Den simulerte hardwaren leser keyboard-input og lager events basert på kommandoer. For å aktivere simulert hardware må man sette environment variabelen `USE_SIMULATED_HARDWARE=True`.
+
+### Kjøring av Game
+For å kjøre programmet kjører man `main.py`:
+
+```bash
 python main.py
+# eller, for å kjøre med simulert hardware
+USE_SIMULATED_HARDWARE=True python main.py
 ```
 
-## Web
-Prosjektet er laget med [create-react-app](https://github.com/facebookincubator/create-react-app), kan være du må installere det (globalt) først med `npm install -g create-react-app`.
-Det du uansett MÅ gjøre for installasjon er:
+### Installering av nye biblioteker
+Dersom man installerer nye pip-biblioteker i Game må man legge avhengigheten inn i `requirements.txt`. Dersom man jobber i et virtuelt milø uten overflødige biblioteker installert, kan man bruke `pip freeze > requirements.txt` for å oppdatere avhengighetene.
+
+
+## Screen
+__Referanser__:
+- https://github.com/facebookincubator/create-react-app
+- http://socket.io/
+
+For å utvikle på Screen må __API__ og __Game__ kjøre enten lokalt eller i produksjon. Du bør ha en forholdsvis ny versjon av `node`, helst `7.4.0` eller høyere.
+
+### Installasjon
+Installér først `create-react-app` globalt, deretter prosjektets avhengigheter.
 
 ```
+npm install -g create-react-app
 npm install
 ```
 
-For å starte dev-server kan du kjøre:
+__Note:__ Pass på å kjøre `npm install` i riktig mappe, altså `/web`.
+
+### Kjøring
+For å kjøre en dev-server med hot-reload kan du bruke `npm start`.
+
+### Environment variabler
+Vi bruker environment variabler for å spesifisere endepunktene til __API__ og __Game__. Disse må være spesifisert i en fil kalt `.env` - den er ignorert av git, så man må lage den selv. Avhengig av hvilke adresser de to endepunktene har kan `.env` for eksempel se ut som dette:
 
 ```
-npm start
+REACT_APP_SOCKET_HOST=localhost
+REACT_APP_SOCKET_PORT=5000
+REACT_APP_API_HOST=localhost
+REACT_APP_API_PORT=8000
 ```
+
+_Mer om dette kan du lese her: [create-react-app docs: .env](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables)_
+
+
+## Portal
+__Referanser__:
+- https://github.com/facebookincubator/create-react-app
+
+For å utvikle på Portal må __API__ kjøre enten lokalt eller i produksjon. Du bør ha en forholdsvis ny versjon av `node`, helst `7.4.0` eller høyere.
+
+### Installasjon
+Installér først `create-react-app` globalt, deretter prosjektets avhengigheter.
+
+```
+npm install -g create-react-app
+npm install
+```
+
+__Note:__ Pass på å kjøre `npm install` i riktig mappe, altså `/portal`.
+
+### Kjøring
+For å kjøre en dev-server med hot-reload kan du bruke `npm start`.
+
+### Environment variabler
+Vi bruker environment variabler for å spesifisere endepunktene til __API__. Disse må være spesifisert i en fil kalt `.env` - den er ignorert av git, så man må lage den selv. Avhengig av hvilke adresser de to endepunktene har kan `.env` for eksempel se ut som dette:
+
+```
+REACT_APP_API_HOST=localhost
+REACT_APP_API_PORT=8000
+```
+
+_Mer om dette kan du lese her: [create-react-app docs: .env](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables)_
