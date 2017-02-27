@@ -61,7 +61,7 @@ class Main extends Component {
           <marquee>
             <span>To start a ranked game, swipe each player's card on the RFID-reader one at a time.</span>
             <span>To start an unranked game, hold both score-buttons for 3+ seconds.</span>
-            <span>To register a new player, click "Register".</span>
+            <span>To register a new player, go to ping-pong.komstek.no!</span>
             <span>Thanks to all our supporters. Moms & Dads, bros and hoes &lt;3</span>
           </marquee>
         </div>
