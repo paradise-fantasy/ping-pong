@@ -18,8 +18,8 @@ def read_buttons(hardware):
     last_btn2 = 0
 
     while hardware.running:
-        btn1 = GPIO.input(37) # 0 if up, 1 if down
-        btn2 = GPIO.input(40) # 0 if up, 1 if down
+        btn1 = 1 - GPIO.input(37) # 0 if up, 1 if down
+        btn2 = 1 - GPIO.input(40) # 0 if up, 1 if down
 
         action = '' #reset actions from last iteration
 

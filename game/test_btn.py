@@ -18,8 +18,8 @@ last_btn2 = 0
 
 
 while True:
-    btn1 = GPIO.input(37) # 0 if up, 1 if down
-    btn2 = GPIO.input(40) # 0 if up, 1 if down
+    btn1 = 1 - GPIO.input(37) # 0 if up, 1 if down
+    btn2 = 1 - GPIO.input(40) # 0 if up, 1 if down
 
     # print "states " + btn1 + ", " + btn2
 
