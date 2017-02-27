@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from time import time
 import eventlet
 import requests
 from actions import Action
@@ -11,6 +12,8 @@ print USE_SIMULATED_HARDWARE
 API_HOST = os.environ['API_HOST'] if 'API_HOST' in os.environ else 'localhost'
 API_PORT = os.environ['API_PORT'] if 'API_PORT' in os.environ else '8000'
 API_URL = 'http://%s:%s' % (API_HOST, API_PORT)
+
+MATCH_SETUP_TIMEOUT = 3 # Seconds ...
 
 class Game:
     STATE_IDLE, STATE_IN_GAME = range(2)
@@ -27,12 +30,21 @@ class Game:
         self.match = None
         self.player_1 = None
         self.player_2 = None
+        self.match_setup_start = None
 
     def start(self):
         eventlet.spawn_n(self.hardware.start)
         running = True
         while running:
             eventlet.sleep(0.2) # Important!
+
+            # Check if match setup timed out
+            if (self.match_setup_start):
+                delta = time() - self.match_setup_start
+                if (delta >= MATCH_SETUP_TIMEOUT):
+                    self.timeout_match()
+
+            # Get next action
             action = self.hardware.get_next_action()
             if action.type == Action.NONE:
                 continue
@@ -124,6 +136,9 @@ class Game:
             # Set player_1
             self.player_1 = card_id
 
+            # Set match setup start timestamp
+            self.match_setup_start = time()
+
             # Broadcast event
             self.socket.emit('GAME_EVENT', { 'type': 'PLAYER_1_JOINED', 'cardId': self.player_1 })
 
@@ -137,12 +152,20 @@ class Game:
             # Set player_2
             self.player_2 = card_id
 
+            # Remove match setup start timestamp
+            self.match_setup_start = None
+            
             # Broadcast event
             self.socket.emit('GAME_EVENT', { 'type': 'PLAYER_2_JOINED', 'cardId': self.player_2 })
 
             # Start the match
             self.start_ranked_match()
 
+    def timeout_match(self):
+        print "Match setup timed out"
+        self.player_1 = None
+        self.match_setup_start = None
+        self.socket.emit('GAME_EVENT', { 'type': 'MATCH_SETUP_EXPIRED' })
 
     def update_score(self, player_number, increment=True):
         # TODO: Try-catch for reverting below 0
