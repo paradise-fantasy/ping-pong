@@ -8,11 +8,20 @@ class Main extends Component {
   constructor() {
     super();
     this.gameEventListener = this.gameEventListener.bind(this);
+    this.refreshPlayers = this.refreshPlayers.bind(this);
   }
 
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
+    this.refreshIntervalId = setInterval(this.refreshPlayers, 3000);
+    this.refreshPlayers();
+  }
 
+  componentWillUnmount() {
+    clearInterval(this.refreshIntervalId);
+  }
+
+  refreshPlayers() {
     getPlayers().then(players => {
       this.props.dispatch({
         type: 'RECEIVE_PLAYERS',
