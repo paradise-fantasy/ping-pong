@@ -5,7 +5,8 @@
 # by the current image. Remove this and errors may occur.
 #
 import socket
-del socket.SO_REUSEPORT
+if (hasattr(socket, "SO_REUSEPORT")):
+    del socket.SO_REUSEPORT
 
 import eventlet
 from flask import Flask

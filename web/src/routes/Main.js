@@ -8,11 +8,20 @@ class Main extends Component {
   constructor() {
     super();
     this.gameEventListener = this.gameEventListener.bind(this);
+    this.refreshPlayers = this.refreshPlayers.bind(this);
   }
 
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
+    this.refreshIntervalId = setInterval(this.refreshPlayers, 3000);
+    this.refreshPlayers();
+  }
 
+  componentWillUnmount() {
+    clearInterval(this.refreshIntervalId);
+  }
+
+  refreshPlayers() {
     getPlayers().then(players => {
       this.props.dispatch({
         type: 'RECEIVE_PLAYERS',
@@ -61,7 +70,7 @@ class Main extends Component {
           <marquee>
             <span>To start a ranked game, swipe each player's card on the RFID-reader one at a time.</span>
             <span>To start an unranked game, hold both score-buttons for 3+ seconds.</span>
-            <span>To register a new player, click "Register".</span>
+            <span>To register a new player, go to ping-pong.komstek.no!</span>
             <span>Thanks to all our supporters. Moms & Dads, bros and hoes &lt;3</span>
           </marquee>
         </div>
@@ -69,6 +78,7 @@ class Main extends Component {
         { this.props.player1 ? // Check if player1 exists
           <div className="Main-player-joined-overlay">
             <h1>{this.props.player1.name} is ready to fight!</h1>
+            <div className="Main-match-setup-expiration" />
           </div>
           : null
         }
