@@ -69,6 +69,7 @@ class Main extends Component {
         { this.props.player1 ? // Check if player1 exists
           <div className="Main-player-joined-overlay">
             <h1>{this.props.player1.name} is ready to fight!</h1>
+            <div className="Main-match-setup-expiration" />
           </div>
           : null
         }

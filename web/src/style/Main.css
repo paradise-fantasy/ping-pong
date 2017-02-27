@@ -83,6 +83,7 @@
   color: #FFF;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -93,4 +94,16 @@
   font-family: 'ninjaruto';
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: #FFF;
+}
+
+.Main-match-setup-expiration {
+  display: block;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  animation: expiration-bar 3s linear;
+}
+
+@keyframes expiration-bar {
+  from { width: 80%; }
+  to { width: 0; }
 }

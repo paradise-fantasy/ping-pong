@@ -12,6 +12,10 @@ const gameReducer = (state = {}, action) => {
         player2: action.cardId
       };
 
+
+    case 'MATCH_SETUP_EXPIRED':
+      return {};
+
     case 'NEW_MATCH_STARTED':
       return {
         ...state,
