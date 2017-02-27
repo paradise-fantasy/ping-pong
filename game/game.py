@@ -12,6 +12,7 @@ print USE_SIMULATED_HARDWARE
 API_HOST = os.environ['API_HOST'] if 'API_HOST' in os.environ else 'localhost'
 API_PORT = os.environ['API_PORT'] if 'API_PORT' in os.environ else '8000'
 API_URL = 'http://%s:%s' % (API_HOST, API_PORT)
+print API_URL
 
 MATCH_SETUP_TIMEOUT = 3 # Seconds ...
 
@@ -128,7 +129,18 @@ class Game:
 
     def register_player(self, card_id):
         print card_id
-        print "Registering player with card_id: " + str(card_id)
+        print "Registering player with card_id: %s" % card_id
+
+        # Check if player card ID exists in API
+        r = requests.get('%s/me/%s' % (API_URL, card_id))
+        if r.status_code == 404:
+            print "No player found for card_id %s" % card_id
+            self.socket.emit('GAME_EVENT', { 'type': 'PLAYER_NOT_REGISTERED', 'cardId': card_id })
+            return
+
+        if r.status_code != 200:
+            print "Error: %s when looking up card_id %s in API" % (r.status_code, card_id)
+            return
 
         # TODO: Fetch players from API
         if not self.player_1:
@@ -154,7 +166,7 @@ class Game:
 
             # Remove match setup start timestamp
             self.match_setup_start = None
-            
+
             # Broadcast event
             self.socket.emit('GAME_EVENT', { 'type': 'PLAYER_2_JOINED', 'cardId': self.player_2 })
 
