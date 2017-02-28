@@ -4,7 +4,7 @@ import sys
 import eventlet
 import requests
 from actions import Action
-from match import Match
+from match import Match, MatchException
 
 USE_SIMULATED_HARDWARE = os.environ['USE_SIMULATED_HARDWARE'] if 'USE_SIMULATED_HARDWARE' in os.environ else False
 print USE_SIMULATED_HARDWARE
@@ -145,8 +145,11 @@ class Game:
 
 
     def update_score(self, player_number, increment=True):
-        # TODO: Try-catch for reverting below 0
-        self.match.update_score(player_number, increment)
+        try:
+            self.match.update_score(player_number, increment)
+        except MatchException as error:
+            print error
+            return
 
         # Broadcast event (PLAYER_[1/2]_[INC/DEC])
         print "Player " + str(player_number) + (" scores!" if increment else " reverts a point.")

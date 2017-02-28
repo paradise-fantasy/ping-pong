@@ -38,7 +38,7 @@ class Match:
         # Evaluate new score
         new_score = player.score + (1 if increment else -1)
         if new_score < 0:
-            raise MatchException("Player " + player_number + " cannot have the score: " + new_score)
+            raise MatchException("Player %s cannot have the score: %s" % (player_number, new_score))
 
         # Update score
         player.score = new_score
