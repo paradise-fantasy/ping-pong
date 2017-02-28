@@ -1,0 +1,22 @@
+.StatusBar {
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+
+  display: flex;
+}
+
+.StatusBar > div {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  color: #F0F0F0;
+  font-size: 24px;
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.StatusBar > div:last-child {
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+}
