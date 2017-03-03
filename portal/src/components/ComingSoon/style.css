@@ -1,0 +1,40 @@
+
+.ComingSoon {
+    background: linear-gradient(
+        rgba(34,34,34, .6),
+        rgba(34,34,34, .6)),
+        url('../../assets/images/background.jpg');
+    background-size: cover;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Ninja;
+
+}
+
+.ComingSoon h1{
+    color: black;
+    // animation: App-text-logo-spin infinite 2s linear;
+    margin: 0;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: #FFF;
+    font-size: 100px;
+}
+
+.ComingSoon-logo {
+  animation: PageHeader-logo-spin infinite 20s linear;
+  height: 200px;
+  padding-bottom: 10px;
+}
+
+@keyframes PageHeader-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@font-face {
+    font-family: Ninja;
+    src: url('../../assets/fonts/njnaruto.ttf');
+}

@@ -3,3 +3,8 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+@font-face {
+  font-family: 'ninjaruto';
+  src: url('assets/fonts/njnaruto.ttf');
+}

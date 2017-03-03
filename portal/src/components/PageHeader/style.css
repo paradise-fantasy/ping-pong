@@ -14,6 +14,15 @@
   margin-bottom: 10px;
 }
 
+.PageHeader-header h2 {
+  position: relative;
+  font-size: 60px;
+  color: #222;
+  font-family: 'ninjaruto';
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #FFF;
+}
+
 
 .PageHeader-logo {
   animation: PageHeader-logo-spin infinite 20s linear;
@@ -24,4 +33,16 @@
 @keyframes PageHeader-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@media screen and (max-width:900px){
+  .PageHeader-header h2 {
+    font-size: 40px;
+  }
+}
+
+@media only screen and (max-width:767px){
+  .PageHeader-header h2 {
+    font-size: 30px;
+  }
 }
