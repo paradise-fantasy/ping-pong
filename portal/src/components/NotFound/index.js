@@ -14,7 +14,7 @@ class NotFound extends Component {
         <PageHeader headerText="Komstek Ping Pong League" />
         <div className="NotFound-intro">
             <Col md={8} mdOffset={2} >
-                <img src="http://www.skogoglandskap.no/imagearchive/stort_hovedtekstbilde_part-whole_Kulturmuinne_stein_kastesteiner_lunner.jpg" alt="404 Not Found"/>
+                <img className="NotFoundImg" src="http://www.skogoglandskap.no/imagearchive/stort_hovedtekstbilde_part-whole_Kulturmuinne_stein_kastesteiner_lunner.jpg" alt="404 Not Found"/>
                 <h1>Vi har lett under hver eneste sten, men kunne desverre ikke finne siden du leter etter.</h1>
             </Col>
         </div>
