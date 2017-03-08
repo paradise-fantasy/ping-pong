@@ -46,14 +46,14 @@ class Main extends Component {
     return (
       <div className="Main">
         <div className="Main-text-logo">
-          <h1>The KomTek Table-Tennis League</h1>
+          <h1>The Komstek Ping-Pong League</h1>
         </div>
 
         <div className="Main-scoreboard">
           <table>
             <tbody>
             {
-              this.props.players.sort((a, b) => b.rating - a.rating).map((player, i) =>
+              this.props.players.sort((a, b) => b.rating - a.rating).slice(0,10).map((player, i) =>
                 <tr key={i}>
                   <td>{i+1}.</td>
                   <td>{player.name}</td>
