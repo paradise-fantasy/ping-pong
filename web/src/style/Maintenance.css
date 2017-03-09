@@ -1,0 +1,27 @@
+.Maintenance {
+  height: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.Main-text-maintenance {
+  display: block;
+  width: 100%;
+  padding-top: 12%;
+  height: 10%;
+  text-align: center;
+  font-size: 30px;
+// font-family: 'ninjaruto';
+  color: #000;
+  margin: 0;
+}
+.Main-text-maintenance h1,h3 {
+   margin: 0;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #FFF;
+}
+.Main-text-maintenance p {
+  margin: 0;
+//  -webkit-text-stroke-width: 1px;
+//  -webkit-text-stroke-color: #FFF;
+}
