@@ -8,6 +8,7 @@ import configureStore from './redux/store';
 import App from './routes/App';
 import Main from './routes/Main';
 import Game from './routes/Game';
+import Maintenance from './routes/Maintenance';
 import './index.css';
 
 // IMPORT ALL ASSETS
@@ -23,6 +24,7 @@ ReactDOM.render(
       <Route path="/" component={App}>
       <IndexRoute component={Main} />
       <Route path="game" component={Game} />
+      <Route path="maintenance" component={Maintenance} />
     </Route>
   </Router>
   </Provider>,
