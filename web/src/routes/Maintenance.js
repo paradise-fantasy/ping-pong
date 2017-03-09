@@ -21,7 +21,7 @@ class Maintenance extends Component {
 	    <p>{this.props.location.query.stop}</p>
 	    <br />
 	    <p>We apologize for any inconveniences that this may cause you!</p><br />
-	    <p>Enquiries regarding the maintenance can be sendt to Paradise (A-187)</p>
+	    <p>Enquiries regarding the maintenance can be sendt to Paradise (A-175)</p>
 	</div>
       </div>
     )
