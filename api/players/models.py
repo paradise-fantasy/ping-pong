@@ -11,5 +11,9 @@ class Player(models.Model):
     games_won = models.IntegerField(default=0)
     rating = models.IntegerField(default=1000)
 
+    def save(self, *args, **kwargs):
+        self.cardid = self.cardid.upper()
+        super(Player, self).save(*args, **kwargs)
+        
     def __str__(self):
         return "%s (%s)" % (self.name, self.cardid)
