@@ -13,7 +13,7 @@ API_HOST = os.environ['API_HOST'] if 'API_HOST' in os.environ else 'localhost'
 API_PORT = os.environ['API_PORT'] if 'API_PORT' in os.environ else '8000'
 API_URL = 'http://%s:%s' % (API_HOST, API_PORT)
 
-MATCH_SETUP_TIMEOUT = 3 # Seconds ...
+MATCH_SETUP_TIMEOUT = 7 # Seconds ...
 
 class Game:
     STATE_IDLE, STATE_IN_GAME = range(2)
