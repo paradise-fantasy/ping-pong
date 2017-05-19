@@ -11,7 +11,7 @@ def read_buttons(hardware):
     GPIO.setup(37,GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(40,GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    LONG_PRESS_THRESHOLD = 3
+    LONG_PRESS_THRESHOLD = 1.5
 
     last_btn1 = 0
     last_btn2 = 0

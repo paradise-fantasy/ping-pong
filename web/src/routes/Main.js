@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { socket as GameSocket } from '../game-socket';
 import { getPlayers } from '../api';
 
+const MATCH_SETUP_TIMEOUT = 7000; // 7 Seconds
+
 class Main extends Component {
   constructor() {
     super();
@@ -13,7 +15,7 @@ class Main extends Component {
 
   componentDidMount() {
     GameSocket.on('GAME_EVENT', this.gameEventListener);
-    this.refreshIntervalId = setInterval(this.refreshPlayers, 3000);
+    this.refreshIntervalId = setInterval(this.refreshPlayers, MATCH_SETUP_TIMEOUT);
     this.refreshPlayers();
   }
 
